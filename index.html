@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <!-- 🪟 Cửa sổ Media Player -->
+  <!-- Media Player -->
   <div class="window" id="musicWindow" style="display:none; min-width:360px; width:480px;">
     <!-- Thanh tiêu đề chính -->
     <div class="title-bar" id="musicWindowHeader">
@@ -38,14 +38,13 @@
     </div>
 
     <div class="window-body" style="padding:0; margin:0;">
-      <!-- Thanh phụ bên trong -->
       <div class="title-bar">
         <div class="title-bar-text" id="nowPlayingText">Now Playing</div>
       </div>
 
       <!-- Video player -->
       <div class="video-wrapper">
-        <video id="videoPlayer" controls></video>
+        <video id="videoPlayer" controls preload="auto"></video>
       </div>
 
       <!-- Nút điều khiển -->
