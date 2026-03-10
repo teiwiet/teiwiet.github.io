@@ -24,12 +24,12 @@ function makeDraggable(windowEl, headerEl) {
   }
 }
 
-// makeDraggable(
-//   document.getElementById("myWindow"),
-//   document.getElementById("myWindowHeader")
-// );
+makeDraggable(
+    document.getElementById("musicWindow"),
+    document.getElementById("musicWindowHeader")
+);
 
 makeDraggable(
-  document.getElementById("musicWindow"),
-  document.getElementById("musicWindowHeader")
+    document.getElementById("cvWindow"),
+    document.getElementById("cvWindowHeader")
 );

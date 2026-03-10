@@ -12,15 +12,9 @@
   <div></div>
   <div id="desktop">
     <div class="icon" id="aboutIcon">
-  <img src="/Portfolio/pictures/msagent-2.png" alt="About me">
-  <span>About me</span>
+      <img src="/Portfolio/pictures/msagent-2.png" alt="About me">
+      <span><a href="#">About me</a></a></span>
     </div>
-    <!-- <div class="icon"> -->
-    <!--   <img src="/Portfolio/pictures/msagent-2.png" alt="Project 1"> -->
-    <!--   <a href="https://github.com/yourname/project1" target="_blank"> -->
-    <!--     About me -->
-    <!--   </a> -->
-    <!-- </div> -->
     <div class="icon">
       <img src="/Portfolio/pictures/directory_open_file_mydocs-1.png" alt="Project 2">
       <span><a href="https://github.com/yourname/project2" target="_blank">Blog</a></span>
@@ -63,22 +57,20 @@
   </div>
 
     <!-- CV -->
-<div class="window" id="cvWindow" style="display:none; width:700px; height:500px;">
+<div class="window" id="cvWindow" style="display:none; width:1000px; height:800px;">
   <div class="title-bar" id="cvWindowHeader">
     <div class="title-bar-text">Viet Tran - CV</div>
     <div class="title-bar-controls">
       <button aria-label="Close" id="closeCV"></button>
     </div>
   </div>
-
-  <div class="window-body" style="padding:0;">
-    <iframe 
-      src="/Portfolio/lkmpg.pdf"
-      width="100%" 
-      height="450px"
-      style="border:none;">
+  <div class="window-body" style="padding:0; height:100%;">
+    <iframe
+            src="#"
+            style="width:100%; height:100%; border:none;">
     </iframe>
   </div>
+
 </div>
 
   <!-- Duck -->
@@ -89,12 +81,14 @@
     <div class="taskbar-items">
       <button id="musicIcon">🎵</button>
     </div>
+    <div class="taskbar-clock" id="clock"></div>
   </div>
 
   <script src="/Portfolio/drag.js"></script>
   <script src="/Portfolio/duck.js"></script>
   <script src="/Portfolio/music.js"></script>
   <script src="/Portfolio/about.js"></script>
+  <script src="/Portfolio/clock.js"></script>
 </body>
 
 </html>
