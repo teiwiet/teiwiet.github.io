@@ -138,3 +138,45 @@ videoPlayer.addEventListener("error", () => {
 videoPlayer.addEventListener("loadeddata", () => {
     console.log("READY:", videoPlayer.src);
 });
+
+const minMusic = document.getElementById("minMusic");
+const maxMusic = document.getElementById("maxMusic");
+
+let isMaximized = false;
+
+let prevState = {
+    width: "",
+    height: "",
+    top: "",
+    left: ""
+};
+maxMusic.onclick = () => {
+    if (!isMaximized) {
+        // lưu trạng thái cũ
+        prevState = {
+            width: musicWindow.style.width,
+            height: musicWindow.style.height,
+            top: musicWindow.style.top,
+            left: musicWindow.style.left
+        };
+
+        // full screen
+        musicWindow.style.top = "0px";
+        musicWindow.style.left = "0px";
+        musicWindow.style.width = "100vw";
+        musicWindow.style.height = "calc(100vh - 40px)"; // trừ taskbar
+
+        isMaximized = true;
+    } else {
+        // restore
+        musicWindow.style.width = prevState.width;
+        musicWindow.style.height = prevState.height;
+        musicWindow.style.top = prevState.top;
+        musicWindow.style.left = prevState.left;
+
+        isMaximized = false;
+    }
+};
+minMusic.onclick = () => {
+    musicWindow.style.display = "none";
+};
