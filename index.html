@@ -15,9 +15,9 @@
       <img src="/pictures/msagent-2.png" alt="About me">
       <span><a href="#">About me</a></a></span>
     </div>
-    <div class="icon">
-      <img src="/pictures/directory_open_file_mydocs-1.png" alt="Project 2">
-      <span><a href="https://github.com/yourname/project2" target="_blank">Blog</a></span>
+    <div class="icon" id="musicDesktopIcon">
+      <img src="/pictures/directory_open_file_mydocs-1.png">
+      <span><a href="#">Music</a></span>
     </div>
     <div class="icon">
       <img src="/pictures/help_book_computer-0.png" alt="Project 3">
@@ -56,30 +56,27 @@
     </div>
   </div>
 
-    <!-- CV -->
-<div class="window" id="cvWindow" style="display:none; width:1000px; height:800px;">
-  <div class="title-bar" id="cvWindowHeader">
-    <div class="title-bar-text">Viet Tran - CV</div>
-    <div class="title-bar-controls">
-      <button aria-label="Close" id="closeCV"></button>
+  <!-- CV -->
+  <div class="window" id="cvWindow" style="display:none; width:1000px; height:800px;">
+    <div class="title-bar" id="cvWindowHeader">
+      <div class="title-bar-text">Viet Tran - CV</div>
+      <div class="title-bar-controls">
+        <button aria-label="Close" id="closeCV"></button>
+      </div>
     </div>
-  </div>
-  <div class="window-body" style="padding:0; height:100%;">
-    <iframe
-            src="#"
-            style="width:100%; height:100%; border:none;">
-    </iframe>
-  </div>
+    <div class="window-body" style="padding:0; height:100%;">
+      <iframe src="#" style="width:100%; height:100%; border:none;">
+      </iframe>
+    </div>
 
-</div>
+  </div>
 
   <!-- Duck -->
   <div id="duck"></div>
   <!-- Taskbar -->
   <div id="taskbar">
     <button class="start-button">Start</button>
-    <div class="taskbar-items">
-      <button id="musicIcon">🎵</button>
+    <div class="taskbar-items" id="taskbarItems">
     </div>
     <div class="taskbar-clock" id="clock"></div>
   </div>
