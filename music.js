@@ -6,12 +6,12 @@ const nowPlayingText = document.getElementById("nowPlayingText");
 console.log("MUSIC.JS VERSION = PORTFOLIO FIX 2025-OK");
 // Danh sách bài nhạc (playlist)
 const playlist = [
-    "/Portfolio/music/Avicii-Without You.mp4",
-    "/Portfolio/music/Coldplay-Yellow.mp4",
-    "/Portfolio/music/Avicii-Wake Me Up.mp4",
-    "/Portfolio/music/Coldplay-Everglow.mp4",
-    "/Portfolio/music/Avicii-Dear Boy.mp4",
-    "/Portfolio/music/Coldplay-Every Teardrop Is a Waterfall.mp4",
+    "/music/Avicii-Without You.mp4",
+    "/music/Coldplay-Yellow.mp4",
+    "/music/Avicii-Wake Me Up.mp4",
+    "/music/Coldplay-Everglow.mp4",
+    "/music/Avicii-Dear Boy.mp4",
+    "/music/Coldplay-Every Teardrop Is a Waterfall.mp4",
 ];
 let currentIndex = 0;
 function loadVideo(index) {
