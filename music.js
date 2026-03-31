@@ -41,7 +41,7 @@ function loadVideo(index) {
     videoPlayer.volume = volumeSlider.value || 0.5;
 
     const fileName = rawSrc.split("/").pop().replace(/\.[^/.]+$/, "");
-    nowPlayingText.textContent = "Now Playing – " + fileName;
+    nowPlayingText.textContent = "Now Playing–" + fileName;
 
     console.log("Loaded:", src);
 }
