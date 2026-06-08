@@ -240,17 +240,49 @@ body {
 .playlist-item.active .pl-artist {
     color: #c0c0c0;
 }
-/* 🦆 Con vịt chạy quanh màn hình */
-#duck {
+/* 🦆 Con vịt chạy quanh màn hình (bấm vào được!) */
+.duck {
     position: absolute;
     width: 64px;
     height: 64px;
-    background: url("https://uinona.net/wp-content/uploads/gif_980/animated_0000028530.gif") no-repeat;
+    --dir: 1;
     background: url("pictures/New\ Piskel.png") no-repeat;
     background-size: contain;
-    pointer-events: none;   /* để không chặn click icon/desktop */
-    z-index: -1;          /* nổi trên cùng */
+    pointer-events: auto;   /* để bấm được */
+    cursor: pointer;
+    z-index: 5;             /* nổi trên desktop, dưới cửa sổ */
+    transform: scaleX(var(--dir));
     transition: transform 0.3s linear, left 5s linear, top 5s linear;
+}
+
+.duck-bounce {
+    animation: duckBounce 0.45s ease;
+}
+@keyframes duckBounce {
+    0%   { transform: scaleX(var(--dir)) translateY(0)     scale(1); }
+    30%  { transform: scaleX(var(--dir)) translateY(-20px) scale(1.15); }
+    60%  { transform: scaleX(var(--dir)) translateY(0)     scale(0.92); }
+    100% { transform: scaleX(var(--dir)) translateY(0)     scale(1); }
+}
+
+/* 💬 Bong bóng thoại của vịt */
+.duck-bubble {
+    position: absolute;
+    z-index: 9000;
+    background: #ffffe1;
+    border: 1px solid #000;
+    padding: 3px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+    animation: bubbleFade 1.6s ease forwards;
+}
+@keyframes bubbleFade {
+    0%   { opacity: 0; transform: translateY(6px); }
+    15%  { opacity: 1; transform: translateY(0); }
+    80%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-8px); }
 }
 #desktop {
     display: flex;
@@ -460,3 +492,14 @@ body {
 
 /* Taskbar luôn nổi trên các cửa sổ */
 #taskbar { z-index: 99999; }
+
+/* 📄 Nội dung file text (Notepad) */
+.txt-file {
+    background: #fff;
+    border: 2px inset #fff;
+    padding: 10px;
+    min-height: 140px;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+}

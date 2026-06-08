@@ -115,7 +115,35 @@ function renderDocsGrid() {
 
     docsGrid.appendChild(item);
   });
-  docsStatus.textContent = projects.length + " object(s)";
+
+  // 📄 file bí mật (easter egg)
+  const secret = document.createElement("div");
+  secret.className = "docs-item";
+  secret.dataset.id = "secret";
+  secret.innerHTML =
+    '<img src="' + DOC_ICON + '" alt="">' +
+    '<span>secret.txt</span>';
+  secret.onclick = () => {
+    docsGrid.querySelectorAll(".docs-item").forEach(el => el.classList.remove("selected"));
+    secret.classList.add("selected");
+  };
+  secret.ondblclick = () => openTextFile("secret.txt", "i'm single");
+  docsGrid.appendChild(secret);
+
+  docsStatus.textContent = (projects.length + 1) + " object(s)";
+}
+
+// ===== MỞ FILE TEXT (Notepad) =====
+function openTextFile(filename, content) {
+  projectTitle.textContent = filename + " — Notepad";
+  projectContent.innerHTML = '<div class="txt-file"></div>';
+  projectContent.querySelector(".txt-file").textContent = content;
+  projectContent.scrollTop = 0;
+
+  projectWindow.style.display = "block";
+  projectWindow.style.top = "140px";
+  projectWindow.style.left = "340px";
+  bringToFront(projectWindow);
 }
 
 // ===== MỞ CHI TIẾT DỰ ÁN =====
