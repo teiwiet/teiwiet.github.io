@@ -103,6 +103,8 @@ body {
 
 .video-wrapper {
     width: 100%;
+    flex: 1;
+    min-height: 200px;
     background: black;
     display: flex;
     justify-content: center;
@@ -126,6 +128,79 @@ body {
     background: #c0c0c0;
     border-top: 2px solid #fff;
     justify-content: center;
+}
+
+/* 🎵 Layout 2 cột: playlist trái – video phải */
+.player-layout {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+    align-items: stretch;
+}
+
+.playlist-col {
+    width: 220px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 🎵 Playlist trong Media Player */
+.playlist-wrapper {
+    flex: 1;
+    min-height: 160px;
+    overflow-y: auto;
+    background: #fff;
+    margin: 0;
+}
+
+.playlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+}
+
+.playlist-item {
+    display: flex;
+    gap: 6px;
+    padding: 3px 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+}
+
+.playlist-item:hover {
+    background: #d6e3f7;
+}
+
+.playlist-item.active {
+    background: #000080;
+    color: #fff;
+}
+
+.playlist-item .pl-num {
+    color: gray;
+    min-width: 18px;
+    text-align: right;
+}
+
+.playlist-item.active .pl-num {
+    color: #c0c0c0;
+}
+
+.playlist-item .pl-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /* 🦆 Con vịt chạy quanh màn hình */
 #duck {

@@ -13,6 +13,7 @@ const pauseBtn = document.getElementById("pauseBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const volumeSlider = document.getElementById("volumeSlider");
+const playlistEl = document.getElementById("playlist");
 
 console.log("MUSIC.JS VERSION = FULL REWRITE 2026");
 
@@ -29,6 +30,50 @@ const playlist = [
 let currentIndex = 0;
 let taskbarMusicBtn = null;
 
+// ===== FORMAT TÊN BÀI =====
+// "music/Avicii-Without You.mp4" -> "Avicii – Without You"
+function formatTrackName(rawSrc) {
+    const fileName = rawSrc.split("/").pop().replace(/\.[^/.]+$/, "");
+    const dash = fileName.indexOf("-");
+    if (dash > 0) {
+        const artist = fileName.slice(0, dash).trim();
+        const title = fileName.slice(dash + 1).trim();
+        return artist + " – " + title;
+    }
+    return fileName;
+}
+
+// ===== RENDER PLAYLIST =====
+function renderPlaylist() {
+    playlistEl.innerHTML = "";
+    playlist.forEach((src, i) => {
+        const li = document.createElement("li");
+        li.className = "playlist-item";
+        li.dataset.index = i;
+        li.innerHTML =
+            '<span class="pl-num">' + (i + 1) + '.</span>' +
+            '<span class="pl-name">' + formatTrackName(src) + '</span>';
+        // 1 click chọn + phát luôn cho đỡ phải double click
+        li.onclick = () => playTrack(i);
+        playlistEl.appendChild(li);
+    });
+    setActiveTrack(currentIndex);
+}
+
+// ===== HIGHLIGHT BÀI ĐANG PHÁT =====
+function setActiveTrack(index) {
+    playlistEl.querySelectorAll(".playlist-item").forEach(item => {
+        item.classList.toggle("active", Number(item.dataset.index) === index);
+    });
+}
+
+// ===== CHỌN & PHÁT 1 BÀI BẤT KỲ =====
+function playTrack(index) {
+    currentIndex = index;
+    loadVideo(currentIndex);
+    videoPlayer.play().catch(err => console.log("Play blocked:", err));
+}
+
 // ===== LOAD VIDEO =====
 function loadVideo(index) {
     const rawSrc = playlist[index];
@@ -40,8 +85,8 @@ function loadVideo(index) {
     videoPlayer.currentTime = 0;
     videoPlayer.volume = volumeSlider.value || 0.5;
 
-    const fileName = rawSrc.split("/").pop().replace(/\.[^/.]+$/, "");
-    nowPlayingText.textContent = "Now Playing–" + fileName;
+    nowPlayingText.textContent = "Now Playing – " + formatTrackName(rawSrc);
+    setActiveTrack(index);
 
     console.log("Loaded:", src);
 }
@@ -180,3 +225,6 @@ maxMusic.onclick = () => {
 minMusic.onclick = () => {
     musicWindow.style.display = "none";
 };
+
+// ===== KHỞI TẠO PLAYLIST KHI LOAD TRANG =====
+renderPlaylist();

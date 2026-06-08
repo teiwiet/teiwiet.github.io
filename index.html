@@ -26,7 +26,7 @@
   </div>
 
   <!-- Media Player -->
-  <div class="window" id="musicWindow" style="display:none; min-width:360px; width:480px;">
+  <div class="window" id="musicWindow" style="display:none; min-width:520px; width:660px;">
     <!-- Thanh tiêu đề chính -->
     <div class="title-bar" id="musicWindowHeader">
       <div class="title-bar-text">Media Player</div>
@@ -42,18 +42,31 @@
         <div class="title-bar-text" id="nowPlayingText">Now Playing</div>
       </div>
 
-      <!-- Video player -->
-      <div class="video-wrapper">
-        <video id="videoPlayer" controls preload="auto"></video>
-      </div>
+      <div class="player-layout">
+        <!-- Playlist bên trái -->
+        <div class="playlist-col">
+          <div class="title-bar">
+            <div class="title-bar-text">Playlist</div>
+          </div>
+          <div class="playlist-wrapper sunken-panel">
+            <ul class="playlist" id="playlist"></ul>
+          </div>
+        </div>
 
-      <!-- Nút điều khiển -->
-      <div class="video-controls">
-        <button id="prevBtn">⏮</button>
-        <button id="playBtn">▶</button>
-        <button id="pauseBtn">⏸</button>
-        <button id="nextBtn">⏭</button>
-        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+        <!-- Video + điều khiển bên phải -->
+        <div class="player-col">
+          <div class="video-wrapper">
+            <video id="videoPlayer" controls preload="auto"></video>
+          </div>
+
+          <div class="video-controls">
+            <button id="prevBtn">⏮</button>
+            <button id="playBtn">▶</button>
+            <button id="pauseBtn">⏸</button>
+            <button id="nextBtn">⏭</button>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+          </div>
+        </div>
       </div>
     </div>
   </div>
