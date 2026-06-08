@@ -19,6 +19,10 @@
       <img src="/pictures/directory_open_file_mydocs-1.png">
       <span><a href="#" onclick="return false;">Music</a></span>
     </div>
+    <div class="icon" id="docsIcon">
+      <img src="/pictures/directory_open_file_mydocs-1.png" alt="My Documents">
+      <span><a href="#" onclick="return false;">My Documents</a></span>
+    </div>
     <div class="icon">
       <img src="/pictures/help_book_computer-0.png" alt="Project 3">
       <span><a href="https://github.com/yourname/project3" target="_blank">WriteUp</a></span>
@@ -86,6 +90,48 @@
 
   </div>
 
+  <!-- My Documents -->
+  <div class="window" id="docsWindow" style="display:none; width:560px;">
+    <div class="title-bar" id="docsWindowHeader">
+      <div class="title-bar-text">My Documents</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" id="minDocs"></button>
+        <button aria-label="Close" id="closeDocs"></button>
+      </div>
+    </div>
+    <div class="window-body" style="margin:0;">
+      <div class="docs-menubar">
+        <span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span><u>H</u>elp</span>
+      </div>
+      <div class="docs-addressbar">
+        <span class="docs-addr-label">Address</span>
+        <div class="docs-addr-field">
+          <img src="/pictures/directory_open_file_mydocs-1.png" alt="">
+          <span>C:\My Documents\Projects</span>
+        </div>
+      </div>
+      <div class="docs-grid sunken-panel" id="docsGrid"></div>
+      <div class="status-bar">
+        <p class="status-bar-field" id="docsStatus">0 object(s)</p>
+        <p class="status-bar-field">Tran Huy Viet</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project viewer (dùng chung) -->
+  <div class="window" id="projectWindow" style="display:none; width:600px;">
+    <div class="title-bar" id="projectWindowHeader">
+      <div class="title-bar-text" id="projectTitle">Project</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" id="minProject"></button>
+        <button aria-label="Close" id="closeProject"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="project-content" id="projectContent"></div>
+    </div>
+  </div>
+
   <!-- Duck -->
   <div id="duck"></div>
   <!-- Taskbar -->
@@ -101,6 +147,7 @@
   <script src="/duck.js"></script>
   <script src="/music.js"></script>
   <script src="/about.js"></script>
+  <script src="/docs.js"></script>
   <script src="/clock.js"></script>
 </body>
 

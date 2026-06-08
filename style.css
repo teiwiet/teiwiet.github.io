@@ -319,3 +319,144 @@ body {
 .resize-nw { top: -4px; left: -4px; width: 14px; height: 14px; cursor: nwse-resize; z-index: 11; }
 .resize-se { bottom: -4px; right: -4px; width: 14px; height: 14px; cursor: nwse-resize; z-index: 11; }
 .resize-sw { bottom: -4px; left: -4px; width: 14px; height: 14px; cursor: nesw-resize; z-index: 11; }
+
+/* ===== MY DOCUMENTS (explorer) ===== */
+.docs-menubar {
+    display: flex;
+    gap: 14px;
+    padding: 2px 8px;
+    font-size: 12px;
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+}
+.docs-menubar span { cursor: default; }
+.docs-menubar u { text-decoration: underline; }
+
+.docs-addressbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: #c0c0c0;
+}
+.docs-addr-label { font-size: 12px; color: #404040; }
+.docs-addr-field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 2px inset #fff;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+.docs-addr-field img { width: 16px; height: 16px; }
+
+.docs-grid {
+    background: #fff;
+    margin: 4px;
+    min-height: 240px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-content: flex-start;
+    overflow-y: auto;
+}
+
+.docs-item {
+    width: 96px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px dotted transparent;
+    user-select: none;
+}
+.docs-item img { width: 36px; height: 36px; }
+.docs-item span {
+    font-size: 12px;
+    line-height: 1.2;
+    padding: 1px 2px;
+    color: #000;
+}
+.docs-item:hover { border: 1px dotted #808080; }
+.docs-item.selected span {
+    background: #000080;
+    color: #fff;
+}
+.docs-item.selected { border: 1px dotted #000080; }
+
+/* ===== PROJECT VIEWER ===== */
+.project-content {
+    max-height: 68vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.project-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.project-icon { width: 40px; height: 40px; }
+.project-headtext { display: flex; flex-direction: column; gap: 4px; }
+.project-name { font-size: 16px; font-weight: bold; }
+.project-status {
+    align-self: flex-start;
+    font-size: 11px;
+    background: #000080;
+    color: #fff;
+    padding: 1px 8px;
+    border: 1px solid #000040;
+}
+
+.project-content fieldset { margin-bottom: 10px; }
+.project-content legend { font-weight: bold; }
+.project-content p { margin: 4px 2px; line-height: 1.45; }
+
+.project-bullets {
+    margin: 4px 0;
+    padding-left: 22px;
+}
+.project-bullets li {
+    margin-bottom: 6px;
+    line-height: 1.45;
+}
+
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 2px;
+}
+.project-tags .tag {
+    font-size: 11px;
+    background: #c0c0c0;
+    border: 2px outset #fff;
+    padding: 1px 8px;
+}
+
+.project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 2px;
+}
+.link-btn {
+    font-size: 12px;
+    text-decoration: none;
+    color: #000;
+    background: #c0c0c0;
+    border: 2px outset #fff;
+    padding: 3px 12px;
+    cursor: pointer;
+}
+.link-btn:active { border: 2px inset #fff; }
+
+/* Taskbar luôn nổi trên các cửa sổ */
+#taskbar { z-index: 99999; }
