@@ -29,35 +29,101 @@ const playlist = [
 
 let currentIndex = 0;
 let taskbarMusicBtn = null;
+const thumbTargets = [];
 
-// ===== FORMAT TÊN BÀI =====
-// "music/Avicii-Without You.mp4" -> "Avicii – Without You"
-function formatTrackName(rawSrc) {
+// ===== PARSE TÊN BÀI =====
+// "music/Avicii-Without You.mp4" -> { artist: "Avicii", title: "Without You" }
+function parseTrack(rawSrc) {
     const fileName = rawSrc.split("/").pop().replace(/\.[^/.]+$/, "");
     const dash = fileName.indexOf("-");
     if (dash > 0) {
-        const artist = fileName.slice(0, dash).trim();
-        const title = fileName.slice(dash + 1).trim();
-        return artist + " – " + title;
+        return {
+            artist: fileName.slice(0, dash).trim(),
+            title: fileName.slice(dash + 1).trim()
+        };
     }
-    return fileName;
+    return { artist: "", title: fileName };
+}
+
+function formatTrackName(rawSrc) {
+    const { artist, title } = parseTrack(rawSrc);
+    return artist ? artist + " – " + title : title;
+}
+
+// ===== TỰ BẮT THUMBNAIL TỪ VIDEO =====
+// Tạo 1 video ẩn, tua tới 1 khung hình rồi vẽ ra canvas làm ảnh thumb
+function generateThumbnail(rawSrc, imgEl) {
+    const v = document.createElement("video");
+    v.muted = true;
+    v.preload = "metadata";
+    v.src = encodeURI(rawSrc);
+    // để off-screen cho trình duyệt chịu decode khung hình
+    v.style.cssText = "position:fixed;left:-9999px;width:160px;height:90px;";
+    document.body.appendChild(v);
+
+    const cleanup = () => { v.remove(); };
+
+    v.addEventListener("loadeddata", () => {
+        // tua tới ~ giây thứ 3 (hoặc giữa bài nếu ngắn hơn)
+        const t = Math.min(3, (v.duration || 6) / 2);
+        try { v.currentTime = t; } catch (e) { cleanup(); }
+    }, { once: true });
+
+    v.addEventListener("seeked", () => {
+        try {
+            const canvas = document.createElement("canvas");
+            canvas.width = 80;
+            canvas.height = 60;
+            canvas.getContext("2d").drawImage(v, 0, 0, canvas.width, canvas.height);
+            imgEl.src = canvas.toDataURL("image/jpeg", 0.7);
+        } catch (e) {
+            console.log("Thumb fail:", rawSrc, e);
+        }
+        cleanup();
+    }, { once: true });
+
+    v.addEventListener("error", cleanup, { once: true });
 }
 
 // ===== RENDER PLAYLIST =====
 function renderPlaylist() {
     playlistEl.innerHTML = "";
     playlist.forEach((src, i) => {
+        const { artist, title } = parseTrack(src);
+
         const li = document.createElement("li");
         li.className = "playlist-item";
         li.dataset.index = i;
-        li.innerHTML =
-            '<span class="pl-num">' + (i + 1) + '.</span>' +
-            '<span class="pl-name">' + formatTrackName(src) + '</span>';
+
+        const thumb = document.createElement("img");
+        thumb.className = "pl-thumb";
+        thumb.alt = "";
+
+        const meta = document.createElement("div");
+        meta.className = "pl-meta";
+        meta.innerHTML =
+            '<span class="pl-name">' + title + '</span>' +
+            (artist ? '<span class="pl-artist">' + artist + '</span>' : '');
+
+        li.appendChild(thumb);
+        li.appendChild(meta);
+
         // 1 click chọn + phát luôn cho đỡ phải double click
         li.onclick = () => playTrack(i);
         playlistEl.appendChild(li);
+
+        // lưu lại để bắt thumbnail sau (khi mở cửa sổ lần đầu)
+        thumbTargets.push({ src: src, el: thumb });
     });
     setActiveTrack(currentIndex);
+}
+
+// bắt thumbnail cho toàn bộ playlist, chỉ chạy 1 lần
+let thumbsReady = false;
+function ensureThumbnails() {
+    if (thumbsReady) return;
+    thumbsReady = true;
+    thumbTargets.forEach(t => generateThumbnail(t.src, t.el));
 }
 
 // ===== HIGHLIGHT BÀI ĐANG PHÁT =====
@@ -93,12 +159,15 @@ function loadVideo(index) {
 
 // ===== OPEN WINDOW =====
 function openMusicWindow() {
-    musicWindow.style.display = "block";
+    musicWindow.style.display = "flex";
     musicWindow.style.top = "120px";
     musicWindow.style.left = "120px";
 
     currentIndex = 0;
     loadVideo(currentIndex);
+
+    // bắt thumbnail lần đầu mở cửa sổ
+    ensureThumbnails();
 
     // autoplay hợp lệ vì nằm trong click event
     videoPlayer.play().catch(err => console.log("Play blocked:", err));
@@ -115,7 +184,7 @@ function createTaskbarButton() {
 
     taskbarMusicBtn.onclick = () => {
         if (musicWindow.style.display === "none") {
-            musicWindow.style.display = "block";
+            musicWindow.style.display = "flex";
         } else {
             musicWindow.style.display = "none";
         }
