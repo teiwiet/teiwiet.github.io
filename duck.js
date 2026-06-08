@@ -1,4 +1,3 @@
-// duck.js — vịt chạy quanh màn hình, BẤM VÀO ĐƯỢC 🦆
 (function () {
   const MAX_DUCKS = 40;
   const ducks = [];
@@ -6,12 +5,11 @@
   let audioCtx = null;
 
   const messages = [
-    "Quack! 🦆",
-    "I'm single 😏",
+    "Quack!",
+    "I'm single",
     "Click me again 👀",
     "Quack quack quack",
     "Looking for a crush 🥺",
-    "GG WP 🐔",
     "Don't rm -rf me 😨",
     "Ducks can reverse engineer too",
     "sudo quack",
@@ -22,9 +20,7 @@
     "It compiles, ship it 🚀",
     "Have you tried turning it off and on?",
     "I run Linux btw",
-    "Faker is the GOAT 🐐",
-    "T1 wins again 🏆",
-    "git push --force 😈",
+    "git push --force",
     "There's no place like 127.0.0.1",
     "Quacker than your firewall 🔥",
     "Hire me pls 💼",
@@ -35,12 +31,9 @@
     "Ghidra is my best friend",
     "Catch me in the QEMU",
     "I'm not a bug, I'm a feature",
-    "Honk if you love eBPF 🦆",
     "Powered by C and chaos",
     "Blue screen incoming 💙",
     "I dumped your firmware 🔧",
-    "401 Unauthorized... to my heart",
-    "Single and ready to fuzz",
     "Quack overflow",
     "Pet me, I'm friend-shaped",
     "Warning: ducks may multiply",

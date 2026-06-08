@@ -508,3 +508,111 @@ body {
     font-size: 14px;
     white-space: pre-wrap;
 }
+
+/* ===== BOOT SCREEN (Teiwiet OS) ===== */
+#bootScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "MS Sans Serif", "Microsoft Sans Serif", Arial, sans-serif;
+    transition: opacity 0.8s ease;
+}
+#bootScreen.boot-hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.boot-center {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 10px;
+}
+
+/* logo 4 ô màu kiểu cờ */
+.boot-logo {
+    display: grid;
+    grid-template-columns: 38px 38px;
+    grid-template-rows: 38px 38px;
+    gap: 6px;
+    transform: skewY(-8deg);
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.6));
+}
+.boot-logo .pane {
+    display: block;
+    border-radius: 3px;
+}
+.boot-logo .p1 { background: #ff3b3b; }
+.boot-logo .p2 { background: #26c281; }
+.boot-logo .p3 { background: #2e8bff; }
+.boot-logo .p4 { background: #ffcf3b; }
+
+.boot-brand {
+    text-align: left;
+    line-height: 1;
+}
+.boot-title {
+    font-size: 64px;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: -1px;
+}
+.boot-sub {
+    font-size: 22px;
+    color: #bdbdbd;
+    margin-top: 6px;
+}
+.boot-sub span {
+    color: #2e8bff;
+    font-weight: bold;
+    margin-left: 6px;
+}
+
+.boot-bottom {
+    position: absolute;
+    bottom: 84px;
+    width: 320px;
+    text-align: center;
+}
+.boot-progress {
+    height: 18px;
+    border: 2px solid #2a2a2a;
+    background: #0a0a0a;
+    overflow: hidden;
+    position: relative;
+}
+/* các đốt xanh chạy kiểu Win98 */
+.boot-progress-fill {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: -40%;
+    width: 40%;
+    background: repeating-linear-gradient(
+        90deg,
+        #2e8bff 0, #2e8bff 10px,
+        #0a0a0a 10px, #0a0a0a 14px
+    );
+    animation: bootBar 1.6s linear infinite;
+}
+@keyframes bootBar {
+    0%   { left: -40%; }
+    100% { left: 100%; }
+}
+.boot-status {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #d0d0d0;
+}
+.boot-footer {
+    position: absolute;
+    bottom: 24px;
+    font-size: 11px;
+    color: #6a6a6a;
+}
