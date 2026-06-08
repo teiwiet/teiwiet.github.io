@@ -95,6 +95,36 @@ document.querySelectorAll(".window").forEach(win => {
   win.addEventListener("mousedown", () => bringToFront(win));
 });
 
+// ===== NÚT TASKBAR (giống Music) =====
+const tbItems = document.getElementById("taskbarItems");
+
+function addTaskbarBtn(win, label) {
+  if (win._tbBtn) {            // đã có thì chỉ cập nhật nhãn
+    win._tbBtn.textContent = label;
+    return win._tbBtn;
+  }
+  const btn = document.createElement("button");
+  btn.textContent = label;
+  btn.onclick = () => {
+    if (win.style.display === "none") {
+      win.style.display = "block";
+      bringToFront(win);
+    } else {
+      win.style.display = "none";
+    }
+  };
+  tbItems.appendChild(btn);
+  win._tbBtn = btn;
+  return btn;
+}
+
+function removeTaskbarBtn(win) {
+  if (win._tbBtn) {
+    win._tbBtn.remove();
+    win._tbBtn = null;
+  }
+}
+
 // ===== RENDER LƯỚI DỰ ÁN =====
 function renderDocsGrid() {
   docsGrid.innerHTML = "";
@@ -144,6 +174,7 @@ function openTextFile(filename, content) {
   projectWindow.style.top = "140px";
   projectWindow.style.left = "340px";
   bringToFront(projectWindow);
+  addTaskbarBtn(projectWindow, "📄 " + filename);
 }
 
 // ===== MỞ CHI TIẾT DỰ ÁN =====
@@ -194,6 +225,7 @@ function openProject(id) {
   projectWindow.style.top = "90px";
   projectWindow.style.left = "300px";
   bringToFront(projectWindow);
+  addTaskbarBtn(projectWindow, "📄 " + p.name);
 }
 
 // ===== MỞ / ĐÓNG MY DOCUMENTS =====
@@ -204,14 +236,16 @@ function openDocsWindow() {
     docsWindow.style.top = "80px";
   }
   bringToFront(docsWindow);
+  addTaskbarBtn(docsWindow, "📁 My Documents");
 }
 
 docsIcon.onclick = openDocsWindow;
 
-closeDocs.onclick = () => { docsWindow.style.display = "none"; };
+// Close: ẩn + bỏ nút taskbar | Minimize: chỉ ẩn (giữ nút để bật lại)
+closeDocs.onclick = () => { docsWindow.style.display = "none"; removeTaskbarBtn(docsWindow); };
 minDocs.onclick = () => { docsWindow.style.display = "none"; };
 
-closeProject.onclick = () => { projectWindow.style.display = "none"; };
+closeProject.onclick = () => { projectWindow.style.display = "none"; removeTaskbarBtn(projectWindow); };
 minProject.onclick = () => { projectWindow.style.display = "none"; };
 
 // ===== KÉO DI CHUYỂN (dùng makeDraggable từ drag.js) =====

@@ -80,6 +80,11 @@ body {
   font-size: 12px;
   height: 24px;
   min-width: 80px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
   cursor: pointer;
 }
 
