@@ -28,6 +28,7 @@ const playlist = [
 ];
 
 let currentIndex = 0;
+let loadedIndex = -1; // bài đang nằm trong video (để khỏi nạp lại, giữ buffer)
 let taskbarMusicBtn = null;
 const thumbTargets = [];
 
@@ -136,12 +137,19 @@ function setActiveTrack(index) {
 // ===== CHỌN & PHÁT 1 BÀI BẤT KỲ =====
 function playTrack(index) {
     currentIndex = index;
-    loadVideo(currentIndex);
+    loadVideo(index);            // no-op nếu bài đã nạp sẵn
+    videoPlayer.currentTime = 0; // bấm chọn thì luôn phát lại từ đầu
     videoPlayer.play().catch(err => console.log("Play blocked:", err));
 }
 
 // ===== LOAD VIDEO =====
 function loadVideo(index) {
+    // đã nạp đúng bài này rồi -> giữ nguyên buffer, không tải lại
+    if (index === loadedIndex) {
+        setActiveTrack(index);
+        return;
+    }
+
     const rawSrc = playlist[index];
     const src = encodeURI(rawSrc);
 
@@ -153,6 +161,7 @@ function loadVideo(index) {
 
     nowPlayingText.textContent = "Now Playing – " + formatTrackName(rawSrc);
     setActiveTrack(index);
+    loadedIndex = index;
 
     console.log("Loaded:", src);
 }
@@ -297,3 +306,6 @@ minMusic.onclick = () => {
 
 // ===== KHỞI TẠO PLAYLIST KHI LOAD TRANG =====
 renderPlaylist();
+
+loadVideo(0);
+currentIndex = 0;
