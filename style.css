@@ -6,6 +6,23 @@ body {
     font-family: "MS Sans Serif", "Microsoft Sans Serif", Arial, sans-serif;
 }
 
+/* ===== CV WINDOW (iframe lấp đúng phần dưới title bar) ===== */
+#cvWindow {
+    display: flex;
+    flex-direction: column;
+}
+#cvWindow > .window-body {
+    flex: 1;
+    min-height: 0;   /* cho phép co lại trong flex, iframe không tràn */
+    padding: 0;
+}
+#cvWindow iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 /* Cửa sổ */
 .window {
     position: absolute;

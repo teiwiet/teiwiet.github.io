@@ -3,7 +3,7 @@ const cvWindow = document.getElementById("cvWindow");
 const closeCV = document.getElementById("closeCV");
 
 aboutIcon.onclick = () => {
-  cvWindow.style.display = "block";
+  cvWindow.style.display = "flex";
 
   if (!cvWindow.style.left) {
     cvWindow.style.left = "200px";
