@@ -1,0 +1,193 @@
+(function injectBlogStyles() {
+  if (document.getElementById("blogStyles")) return;
+  const css = `
+#blogWindow { display:flex; flex-direction:column; min-width:560px; min-height:360px; }
+#blogWindow > .window-body { flex:1; display:flex; flex-direction:column; min-height:0; margin:0; }
+.blog-layout { display:flex; gap:4px; padding:3px; flex:1; min-height:0; }
+.blog-list-col { width:220px; flex-shrink:0; display:flex; flex-direction:column; }
+.blog-list-wrapper { flex:1; min-height:160px; overflow-y:auto; background:#fff; margin:0; }
+.blog-list { list-style:none; margin:0; padding:0; font-size:12px; }
+.blog-item { display:flex; flex-direction:column; gap:2px; padding:6px 8px; cursor:pointer; user-select:none; border-bottom:1px solid #ececec; }
+.blog-item:hover { background:#d6e3f7; }
+.blog-item.active { background:#000080; color:#fff; }
+.blog-item .blog-title { font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.blog-item .blog-date { font-size:11px; color:gray; }
+.blog-item.active .blog-date { color:#c0c0c0; }
+.blog-content-col { flex:1; min-width:0; background:#fff; margin:0; overflow:hidden; display:flex; }
+
+/* khu vực đọc: dùng font vector cho mượt (KHÔNG để MS Sans Serif kẻo vỡ pixel) */
+.blog-content {
+  flex:1; overflow-y:auto; padding:16px 22px;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+  font-size:14px; line-height:1.6; color:#1a1a1a;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+  margin:0.9em 0 0.45em; line-height:1.25;
+  border-bottom:1px solid #d0d0d0; padding-bottom:4px;
+}
+.markdown-body h1 { font-size:26px; }
+.markdown-body h2 { font-size:20px; }
+.markdown-body h3 { font-size:16px; border-bottom:none; }
+.markdown-body p  { margin:0.65em 0; }
+.markdown-body a  { color:#0645ad; }
+.markdown-body ul, .markdown-body ol { padding-left:26px; margin:0.5em 0; }
+.markdown-body li { margin:4px 0; }
+.markdown-body code {
+  font-family:"Courier New", monospace; background:#f3f3f3;
+  border:1px solid #ddd; border-radius:3px; padding:1px 4px; font-size:13px;
+}
+.markdown-body pre {
+  background:#1e1e1e; color:#e6e6e6; padding:12px 14px;
+  border-radius:4px; overflow-x:auto; line-height:1.45;
+}
+.markdown-body pre code { background:none; border:none; color:inherit; padding:0; }
+.markdown-body blockquote {
+  margin:0.7em 0; padding:6px 14px;
+  border-left:4px solid #000080; background:#f6f6f6; color:#444;
+}
+.markdown-body img { max-width:100%; }
+.markdown-body table { border-collapse:collapse; margin:0.7em 0; }
+.markdown-body th, .markdown-body td { border:1px solid #999; padding:5px 9px; }
+.markdown-body hr { border:none; border-top:1px solid #ccc; margin:1.2em 0; }
+`;
+  const style = document.createElement("style");
+  style.id = "blogStyles";
+  style.textContent = css;
+  document.head.appendChild(style);
+})();
+
+// ===== DANH SÁCH BLOG =====
+// Mỗi bài: { id, title, date, file: "writeups/abc.md" }  -> đọc từ file .md
+// hoặc      { id, title, date, content: "# markdown..." } -> viết thẳng ở đây
+const blogs = [
+  {
+    id: "netgear",
+    title: "Netgear Firmware Exploitation",
+    date: "Nov 2025",
+    file: "blog/netgear.md"
+  },
+];
+
+// ===== ELEMENTS =====
+const writeupIcon = document.getElementById("writeupIcon");
+const blogWindow  = document.getElementById("blogWindow");
+const blogList    = document.getElementById("blogList");
+const blogContent = document.getElementById("blogContent");
+const closeBlog   = document.getElementById("closeBlog");
+const minBlog     = document.getElementById("minBlog");
+const maxBlog     = document.getElementById("maxBlog");
+
+let blogLoadedId = null;
+
+// ===== MARKDOWN -> HTML (an toàn nếu marked chưa load / khác version) =====
+function mdToHtml(md) {
+  // bỏ frontmatter YAML (--- ... ---) ở đầu file nếu có
+  md = md.replace(/^\uFEFF?\s*---\s*\r?\n[\s\S]*?\r?\n---\s*\r?\n/, "");
+
+  if (window.marked) {
+    if (typeof marked.parse === "function") return marked.parse(md);
+    if (typeof marked === "function") return marked(md);
+  }
+  return "<pre>" + md.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</pre>";
+}
+
+// ===== RENDER DANH SÁCH BÀI VIẾT (cột trái) =====
+function renderBlogList() {
+  blogList.innerHTML = "";
+  blogs.forEach(b => {
+    const li = document.createElement("li");
+    li.className = "blog-item";
+    li.dataset.id = b.id;
+    li.innerHTML =
+      '<span class="blog-title">' + b.title + '</span>' +
+      (b.date ? '<span class="blog-date">' + b.date + '</span>' : '');
+    li.onclick = () => openBlog(b.id);
+    blogList.appendChild(li);
+  });
+}
+
+function setActiveBlog(id) {
+  blogList.querySelectorAll(".blog-item").forEach(it => {
+    it.classList.toggle("active", it.dataset.id === id);
+  });
+}
+
+// ===== MỞ 1 BÀI VIẾT =====
+async function openBlog(id) {
+  const b = blogs.find(x => x.id === id);
+  if (!b) return;
+
+  setActiveBlog(id);
+  blogLoadedId = id;
+
+  let md;
+  if (b.content != null) {
+    md = b.content;
+  } else {
+    blogContent.innerHTML = '<p style="color:gray">Đang tải…</p>';
+    try {
+      const res = await fetch(b.file);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      md = await res.text();
+    } catch (e) {
+      blogContent.innerHTML =
+        '<h1>:( Không mở được bài viết</h1>' +
+        '<p>Không đọc được file: <code>' + b.file + '</code></p>' +
+        '<p style="color:gray">' + e.message + '</p>';
+      return;
+    }
+  }
+
+  blogContent.innerHTML = mdToHtml(md);
+  blogContent.scrollTop = 0;
+}
+
+// ===== MỞ / ĐÓNG CỬA SỔ =====
+function openBlogWindow() {
+  blogWindow.style.display = "flex";
+  if (!blogWindow.style.left) {
+    blogWindow.style.left = "180px";
+    blogWindow.style.top = "90px";
+  }
+  bringToFront(blogWindow);          // dùng chung từ docs.js
+  addTaskbarBtn(blogWindow, "📖 WriteUp");
+
+  if (!blogLoadedId && blogs.length) openBlog(blogs[0].id);
+}
+
+writeupIcon.onclick = openBlogWindow;
+writeupIcon.ondblclick = openBlogWindow;
+
+closeBlog.onclick = () => { blogWindow.style.display = "none"; removeTaskbarBtn(blogWindow); };
+minBlog.onclick   = () => { blogWindow.style.display = "none"; };
+
+// ===== MAXIMIZE (giống Media Player) =====
+let blogMax = false;
+let blogPrev = {};
+maxBlog.onclick = () => {
+  if (!blogMax) {
+    blogPrev = {
+      width: blogWindow.style.width, height: blogWindow.style.height,
+      top: blogWindow.style.top,     left: blogWindow.style.left
+    };
+    blogWindow.style.top = "0px";
+    blogWindow.style.left = "0px";
+    blogWindow.style.width = "100vw";
+    blogWindow.style.height = "calc(100vh - 40px)";
+    blogMax = true;
+  } else {
+    blogWindow.style.width  = blogPrev.width;
+    blogWindow.style.height = blogPrev.height;
+    blogWindow.style.top    = blogPrev.top;
+    blogWindow.style.left   = blogPrev.left;
+    blogMax = false;
+  }
+};
+
+// ===== KÉO DI CHUYỂN + RESIZE =====
+makeDraggable(blogWindow, document.getElementById("blogWindowHeader")); // drag.js
+makeResizable(blogWindow, { minW: 560, minH: 360 });                    // resize.js
+
+// ===== KHỞI TẠO =====
+renderBlogList();

@@ -6,6 +6,7 @@
   <title>Teiwiet</title>
   <link rel="stylesheet" href="https://unpkg.com/98.css" />
   <link rel="stylesheet" href="/style.css" />
+  <script src="https://unpkg.com/marked@12.0.0/marked.min.js"></script>
 </head>
 
 <body>
@@ -29,7 +30,7 @@
   <div id="desktop">
     <div class="icon" id="aboutIcon">
       <img src="/pictures/msagent-2.png" alt="About me">
-      <span><a href="#">About me</a></a></span>
+      <span><a href="#">About me</a></span>
     </div>
     <div class="icon" id="musicDesktopIcon">
       <img src="/pictures/directory_open_file_mydocs-1.png">
@@ -39,9 +40,9 @@
       <img src="/pictures/directory_open_file_mydocs-1.png" alt="My Documents">
       <span><a href="#" onclick="return false;">My Documents</a></span>
     </div>
-    <div class="icon">
-      <img src="/pictures/help_book_computer-0.png" alt="Project 3">
-      <span><a href="https://github.com/yourname/project3" target="_blank">WriteUp</a></span>
+    <div class="icon" id="writeupIcon">
+      <img src="/pictures/help_book_computer-0.png" alt="WriteUp">
+      <span><a href="#" onclick="return false;">WriteUp</a></span>
     </div>
   </div>
 
@@ -148,6 +149,33 @@
     </div>
   </div>
 
+  <!-- WriteUp / Blog -->
+  <div class="window" id="blogWindow" style="display:none; min-width:600px; width:820px; height:560px;">
+    <div class="title-bar" id="blogWindowHeader">
+      <div class="title-bar-text">WriteUp — Blog</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" id="minBlog"></button>
+        <button aria-label="Maximize" id="maxBlog"></button>
+        <button aria-label="Close" id="closeBlog"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="blog-layout">
+        <div class="blog-list-col">
+          <div class="title-bar"><div class="title-bar-text">Posts</div></div>
+          <div class="blog-list-wrapper sunken-panel">
+            <ul class="blog-list" id="blogList"></ul>
+          </div>
+        </div>
+        <div class="blog-content-col sunken-panel">
+          <div class="blog-content markdown-body" id="blogContent">
+            <p style="color:gray">Chọn một bài viết bên trái để đọc…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Duck -->
   <div id="duck"></div>
   <!-- Taskbar -->
@@ -164,6 +192,7 @@
   <script src="/music.js"></script>
   <script src="/about.js"></script>
   <script src="/docs.js"></script>
+  <script src="/blog.js"></script>
   <script src="/clock.js"></script>
   <script src="/boot.js"></script>
 </body>
