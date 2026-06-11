@@ -82,7 +82,6 @@ let blogLoadedId = null;
 
 // ===== MARKDOWN -> HTML (an toàn nếu marked chưa load / khác version) =====
 function mdToHtml(md) {
-  // bỏ frontmatter YAML (--- ... ---) ở đầu file nếu có
   md = md.replace(/^\uFEFF?\s*---\s*\r?\n[\s\S]*?\r?\n---\s*\r?\n/, "");
 
   if (window.marked) {
