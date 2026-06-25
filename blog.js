@@ -57,17 +57,15 @@
   document.head.appendChild(style);
 })();
 
-// ===== DANH SÁCH BLOG =====
-// Mỗi bài: { id, title, date, file: "writeups/abc.md" }  -> đọc từ file .md
-// hoặc      { id, title, date, content: "# markdown..." } -> viết thẳng ở đây
-const blogs = [
-  {
-    id: "netgear",
-    title: "Netgear Firmware Exploitation",
-    date: "Nov 2025",
-    file: "blog/netgear.md"
-  },
-];
+// ===== CONFIG: NGUỒN BÀI VIẾT =====
+// Tự liệt kê mọi file .md trong thư mục blog/ trên GitHub.
+// => Chỉ cần push thêm blog/abc.md là nó tự hiện, KHÔNG cần sửa code.
+// Sửa lại 2 dòng này nếu repo / thư mục của bạn khác:
+const BLOG_REPO = "teiwiet/teiwiet.github.io"; // "user/repo"
+const BLOG_DIR  = "blog";                      // thư mục chứa file .md
+
+let blogs = [];              // sẽ được nạp tự động từ GitHub
+let blogIndexLoaded = false; // chỉ nạp 1 lần
 
 // ===== ELEMENTS =====
 const writeupIcon = document.getElementById("writeupIcon");
@@ -91,6 +89,90 @@ function mdToHtml(md) {
   return "<pre>" + md.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</pre>";
 }
 
+// ===== ĐỌC FRONTMATTER (title, date) ở đầu file .md =====
+function parseFrontmatter(md) {
+  const m = md.match(/^\uFEFF?\s*---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n/);
+  const meta = {};
+  if (m) {
+    m[1].split(/\r?\n/).forEach(line => {
+      const idx = line.indexOf(":");
+      if (idx > 0) {
+        const key = line.slice(0, idx).trim().toLowerCase();
+        const val = line.slice(idx + 1).trim().replace(/^["']|["']$/g, "");
+        if (val) meta[key] = val;
+      }
+    });
+  }
+  return meta;
+}
+
+// ===== TÊN ĐẸP TỪ FILENAME (fallback khi .md không có title) =====
+function prettifyName(filename) {
+  return filename
+    .replace(/\.md$/i, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+// ===== TỰ NẠP DANH SÁCH .md TỪ GITHUB =====
+async function loadBlogIndex() {
+  if (blogIndexLoaded) return;
+
+  blogList.innerHTML = '<li style="padding:8px;color:gray">Đang tải danh sách…</li>';
+
+  // dùng nhánh mặc định của repo (khỏi lo main/master)
+  const api = "https://api.github.com/repos/" + BLOG_REPO + "/contents/" + BLOG_DIR;
+
+  let files;
+  try {
+    const res = await fetch(api, { headers: { Accept: "application/vnd.github+json" } });
+    if (!res.ok) throw new Error("GitHub API " + res.status);
+    const data = await res.json();
+    files = data.filter(f => f.type === "file" && /\.md$/i.test(f.name));
+  } catch (e) {
+    blogList.innerHTML =
+      '<li style="padding:8px;color:#a00">Không tải được danh sách bài viết<br>' +
+      '<span style="color:gray;font-size:11px">' + e.message + '</span></li>';
+    return;
+  }
+
+  // tải nội dung từng file (cùng origin) để lấy title/date + cache luôn
+  blogs = await Promise.all(files.map(async f => {
+    const path = BLOG_DIR + "/" + f.name;
+    let md = "";
+    try {
+      const r = await fetch(path);
+      if (r.ok) md = await r.text();
+    } catch (_) {}
+    const meta = parseFrontmatter(md);
+    return {
+      id: f.name.replace(/\.md$/i, ""),
+      file: path,
+      title: meta.title || prettifyName(f.name),
+      date: meta.date || "",
+      content: md || null   // cache; null thì lúc bấm sẽ tải lại
+    };
+  }));
+
+  // mới nhất lên đầu: theo date nếu đọc được, không thì theo tên giảm dần
+  blogs.sort((a, b) => {
+    const da = Date.parse(a.date), db = Date.parse(b.date);
+    if (!isNaN(da) && !isNaN(db)) return db - da;
+    return b.id.localeCompare(a.id);
+  });
+
+  blogIndexLoaded = true;
+
+  if (!blogs.length) {
+    blogList.innerHTML = '<li style="padding:8px;color:gray">Chưa có file .md nào trong /' + BLOG_DIR + '</li>';
+    blogContent.innerHTML = '<p style="color:gray">Thêm file .md vào thư mục ' + BLOG_DIR + '/ là nó tự hiện ở đây.</p>';
+    return;
+  }
+
+  renderBlogList();
+  openBlog(blogs[0].id); // mở sẵn bài mới nhất
+}
+
 // ===== RENDER DANH SÁCH BÀI VIẾT (cột trái) =====
 function renderBlogList() {
   blogList.innerHTML = "";
@@ -104,6 +186,7 @@ function renderBlogList() {
     li.onclick = () => openBlog(b.id);
     blogList.appendChild(li);
   });
+  if (blogLoadedId) setActiveBlog(blogLoadedId);
 }
 
 function setActiveBlog(id) {
@@ -129,6 +212,7 @@ async function openBlog(id) {
       const res = await fetch(b.file);
       if (!res.ok) throw new Error("HTTP " + res.status);
       md = await res.text();
+      b.content = md; // cache lại
     } catch (e) {
       blogContent.innerHTML =
         '<h1>:( Không mở được bài viết</h1>' +
@@ -152,7 +236,7 @@ function openBlogWindow() {
   bringToFront(blogWindow);          // dùng chung từ docs.js
   addTaskbarBtn(blogWindow, "📖 WriteUp");
 
-  if (!blogLoadedId && blogs.length) openBlog(blogs[0].id);
+  loadBlogIndex();                   // tự quét .md trong blog/ (chỉ chạy lần đầu)
 }
 
 writeupIcon.onclick = openBlogWindow;
@@ -187,6 +271,3 @@ maxBlog.onclick = () => {
 // ===== KÉO DI CHUYỂN + RESIZE =====
 makeDraggable(blogWindow, document.getElementById("blogWindowHeader")); // drag.js
 makeResizable(blogWindow, { minW: 560, minH: 360 });                    // resize.js
-
-// ===== KHỞI TẠO =====
-renderBlogList();
