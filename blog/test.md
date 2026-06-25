@@ -8,7 +8,7 @@ title: Firmware Command Injection Writeup
 ## Mở đầu 
 Tiếp tục công cuộc học security của mình thì gần đây mình bắt đầu tìm hiểu sâu hơn về bảo mật firmware của các thiết bị embedded, chủ yếu để hiểu rõ hơn cách các thiết bị IoT thực sự vận hành bên trong. Sau 1 hồi lướt Bugcrowd với search qua thì mình quyết định chọn một firmware của Netgear làm đối tượng nghiên cứu, tại sao lại là Netgear á thì nhìn đống này đi. Số lượng CVE của Netgear được tìm thấy ở cve.org phải gấp đôi so với Dlink biết đâu ăn may lại tìm thấy lỗ hổng.
 
-![image](/pictures/start.png)
+![image](/pictures/test.png)
 
 Sau khi xem qua một vài firmware khác nhau, mình quyết định chọn WNAP320 vì đây là một model access point khá cũ của Netgear. Những thiết bị legacy như vậy thường có codebase lâu đời, ít được cập nhật và extract cũng đơn giản hơn, nên khả năng xuất hiện các bug thú vị cũng cao hơn, nó giống như mấy con Tplink ở Việt Nam vậy. Link firmware: https://www.downloads.netgear.com/files/GDC/WNAP320/WNAP320_V3.7.4.0.zip
 
