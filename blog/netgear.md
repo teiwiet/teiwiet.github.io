@@ -1,5 +1,5 @@
 # Firmware Analysis: Command Injection Case Study
-*11/10/2025 • Thời gian đọc: ~16 phút*
+*11/4/2026 • Thời gian đọc: ~16 phút*
 ## Mở đầu 
 Tiếp tục công cuộc học security của mình thì gần đây mình bắt đầu tìm hiểu sâu hơn về bảo mật firmware của các thiết bị embedded, chủ yếu để hiểu rõ hơn cách các thiết bị IoT thực sự vận hành bên trong. Sau 1 hồi lướt Bugcrowd với search qua thì mình quyết định chọn một firmware của Netgear làm đối tượng nghiên cứu, tại sao lại là Netgear á thì nhìn đống này đi. Số lượng CVE của Netgear được tìm thấy ở cve.org phải gấp đôi so với Dlink biết đâu ăn may lại tìm thấy lỗ hổng.
 

@@ -89,7 +89,7 @@ function mdToHtml(md) {
   return "<pre>" + md.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</pre>";
 }
 
-// ===== ĐỌC FRONTMATTER (title, date) ở đầu file .md =====
+// ===== ĐỌC FRONTMATTER (title, date, order) ở đầu file .md =====
 function parseFrontmatter(md) {
   const m = md.match(/^\uFEFF?\s*---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n/);
   const meta = {};
@@ -110,8 +110,22 @@ function parseFrontmatter(md) {
 function prettifyName(filename) {
   return filename
     .replace(/\.md$/i, "")
+    .replace(/^\s*\d+\s*[-_.]\s*/, "")   // bỏ số thứ tự ở đầu: "1_netgear" -> "netgear"
     .replace(/[-_]+/g, " ")
     .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+// ===== ĐỌC THỨ TỰ SẮP XẾP =====
+// Ưu tiên 'order:' trong frontmatter, rồi tới số ở đầu tên file (1_netgear.md, 02-tenda.md, 3.foo.md)
+// Không có gì -> null (bài đó sẽ xuống dưới các bài có số, xếp theo date/tên như cũ)
+function parseOrder(filename, meta) {
+  if (meta && meta.order != null && meta.order !== "") {
+    const n = Number(meta.order);
+    if (!isNaN(n)) return n;
+  }
+  const m = filename.match(/^\s*(\d+)\s*[-_.]/);
+  if (m) return Number(m[1]);
+  return null;
 }
 
 // ===== TỰ NẠP DANH SÁCH .md TỪ GITHUB =====
@@ -136,7 +150,7 @@ async function loadBlogIndex() {
     return;
   }
 
-  // tải nội dung từng file (cùng origin) để lấy title/date + cache luôn
+  // tải nội dung từng file (cùng origin) để lấy title/date/order + cache luôn
   blogs = await Promise.all(files.map(async f => {
     const path = BLOG_DIR + "/" + f.name;
     let md = "";
@@ -150,12 +164,21 @@ async function loadBlogIndex() {
       file: path,
       title: meta.title || prettifyName(f.name),
       date: meta.date || "",
+      order: parseOrder(f.name, meta),
       content: md || null   // cache; null thì lúc bấm sẽ tải lại
     };
   }));
 
-  // mới nhất lên đầu: theo date nếu đọc được, không thì theo tên giảm dần
+  // Quy tắc xếp:
+  //  1) Bài có 'order' luôn nằm TRÊN bài không có; số nhỏ lên trước.
+  //  2) Bài không đánh số: giữ như cũ — mới nhất lên đầu theo date,
+  //     không đọc được date thì theo tên giảm dần.
   blogs.sort((a, b) => {
+    const ao = a.order, bo = b.order;
+    if (ao != null && bo != null) { if (ao !== bo) return ao - bo; }
+    else if (ao != null) return -1;
+    else if (bo != null) return 1;
+
     const da = Date.parse(a.date), db = Date.parse(b.date);
     if (!isNaN(da) && !isNaN(db)) return db - da;
     return b.id.localeCompare(a.id);
@@ -170,7 +193,7 @@ async function loadBlogIndex() {
   }
 
   renderBlogList();
-  openBlog(blogs[0].id); // mở sẵn bài mới nhất
+  openBlog(blogs[0].id); // mở sẵn bài đầu danh sách
 }
 
 // ===== RENDER DANH SÁCH BÀI VIẾT (cột trái) =====
