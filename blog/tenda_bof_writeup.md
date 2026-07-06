@@ -5,7 +5,7 @@
 
 ## Mở đầu
 
-Series tìm hiểu firmware security của mình lần này rẽ sang một dòng thiết bị mà chắc ai ở Việt Nam cũng từng thấy qua: Tenda.
+Series tìm hiểu firmware security của mình lần này rẽ sang một dòng thiết bị mà chắc ai ở Việt Nam cũng từng thấy qua: router Tenda.
 
 Lý do chọn thì chẳng có gì cao siêu. Tenda phổ biến, nhà nào lắp gói mạng giá rẻ gần như cũng có một con. Lịch sử CVE của hãng thì khỏi bàn, search sơ sơ đã ra một danh sách khá dài.
 
