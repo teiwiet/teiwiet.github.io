@@ -1,14 +1,9 @@
----
-title: Firmware Command Injection Writeup
-
----
-
 # Firmware Analysis: Command Injection Case Study
 *11/10/2025 • Thời gian đọc: ~16 phút*
 ## Mở đầu 
 Tiếp tục công cuộc học security của mình thì gần đây mình bắt đầu tìm hiểu sâu hơn về bảo mật firmware của các thiết bị embedded, chủ yếu để hiểu rõ hơn cách các thiết bị IoT thực sự vận hành bên trong. Sau 1 hồi lướt Bugcrowd với search qua thì mình quyết định chọn một firmware của Netgear làm đối tượng nghiên cứu, tại sao lại là Netgear á thì nhìn đống này đi. Số lượng CVE của Netgear được tìm thấy ở cve.org phải gấp đôi so với Dlink biết đâu ăn may lại tìm thấy lỗ hổng.
 
-![image](/pictures/test.png)
+![image](https://hackmd.io/_uploads/Hy-2IXjtWe.png)
 
 Sau khi xem qua một vài firmware khác nhau, mình quyết định chọn WNAP320 vì đây là một model access point khá cũ của Netgear. Những thiết bị legacy như vậy thường có codebase lâu đời, ít được cập nhật và extract cũng đơn giản hơn, nên khả năng xuất hiện các bug thú vị cũng cao hơn, nó giống như mấy con Tplink ở Việt Nam vậy. Link firmware: https://www.downloads.netgear.com/files/GDC/WNAP320/WNAP320_V3.7.4.0.zip
 
@@ -35,11 +30,22 @@ Sau khi tìm kiếm trong filesystem, mình phát hiện một vài thứ khá h
 
 Quay lại phần web interface thì các router thường phải thực hiện nhiều thao tác hệ thống như restart wifi, thay đổi cấu hình hoặc backup settings. Vì vậy backend của web interface thường build command rồi gọi shell để thực thi. Nếu input từ người dùng không được kiểm soát chặt, điều này rất dễ dẫn tới các bug kiểu command injection.
 
-Tuy nhiên chỉ đọc code thì khá khó để xác định luồng thực thi thực sự của chương trình, nên mình quyết định mô phỏng lại môi trường của firmware để quan sát hành vi của nó rõ hơn.
-
-Một thành phần quan trọng của hệ thống là busybox, vì hầu hết các lệnh hệ thống trên router đều được implement thông qua nó. Do đó bước đầu tiên là thử chạy busybox bằng qemu-mips để kiểm tra xem các binary MIPS trong firmware có hoạt động trong môi trường giả lập hay không. Và khá may mắn là mình có thể chạy **bin/busybox** và ta sẽ có một shell trong firmware:
+Tuy nhiên chỉ đọc code thì khá khó để xác định luồng thực thi thực sự của chương trình, nên mình quyết định mô phỏng lại môi trường của firmware để quan sát hành vi của nó rõ hơn. Do đó bước đầu tiên là thử chạy busybox bằng qemu-mips để kiểm tra xem các binary MIPS trong firmware có hoạt động trong môi trường giả lập hay không. Và khá may mắn là mình có thể chạy **bin/busybox** và ta sẽ có một shell trong firmware:
 ![Untitled-2026-03-09-0611](https://hackmd.io/_uploads/ry9MVFiK-l.png)
 
 Việc tiếp theo là mở cái webserver lên thôi: 
 ***# sbin/lighttpd -f etc/lighttpd.conf***
+ta có thể truy cập giao diện quản trị của router thông qua trình duyệt tại:
 ![image](https://hackmd.io/_uploads/SycpDtjt-x.png)
+
+Sau 1 hồi mò mãi đống mật khẩu hay được dùng thì mình không tìm được Username/Password thì mình chú ý tới file login.php, đây là nơi xử lý việc xác thực người dùng khi đăng nhập vào giao diện quản trị. Ban đầu mình nghĩ rằng nó sẽ kiểm tra username/password với một giá trị được lưu sẵn trong hệ thống, nhưng khi đọc kỹ logic thì phát hiện ra cơ chế xác thực thực tế lại khá lỏng lẻo.
+
+![2 func](https://hackmd.io/_uploads/Syah_nk5bx.png)
+![tmp](https://hackmd.io/_uploads/BkG6O2Jcbl.png)
+
+Nói 1 cách đơn giản là nó chỉ check xem /tmp/sessionid có tồn tại chưa và sự tồn tại của file này được dùng để xác định đang có login. Nếu file /tmp/sessionid tồn tại và thời gian chỉnh sửa của file vẫn nằm trong khoảng thời gian session cho phép, hệ thống sẽ cho rằng đã có một phiên đăng nhập hợp lệ ở đây là 300s. Đây là một lỗi thiết kế trong cơ chế quản lý session, vì kẻ tấn công có thể tự tạo file này để giả mạo một phiên đăng nhập hợp lệ. Việc chúng ta cần làm bây giờ là thử tạo 1 file với dạng "id,ip,username" là được và ở trên web chỉ cần nhét cái id mà chúng ta dùng vào cookie là xong: 
+***echo "test123,127.0.0.1,admin" > /tmp/sessionid***
+
+![image](https://hackmd.io/_uploads/HypzA21c-x.png)
+
+Vậy là chúng ta có thể đăng nhập mà không cần Username/password rồi. 
