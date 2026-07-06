@@ -8,7 +8,11 @@
   //   - Muốn tự đặt tên: dùng { url: "...", title: "...", artist: "..." }
   // Nhận mọi kiểu link: watch?v= , youtu.be/ , /shorts/ , /embed/
   const YOUTUBE_TRACKS = [
-    "https://www.youtube.com/watch?v=mhqovVvKwVE"
+    "https://www.youtube.com/watch?v=mhqovVvKwVE",
+    "https://www.youtube.com/watch?v=dd7nhkYdXHI",
+    "https://www.youtube.com/watch?v=58IkVCh3hWU"
+    "https://www.youtube.com/watch?v=eLYS88I2dK0",
+
   ];
   // ====================================================
 

@@ -5,7 +5,7 @@
 
 ## Mở đầu
 
-Series tìm hiểu firmware security của mình lần này rẽ sang một dòng thiết bị mà chắc ai ở Việt Nam cũng từng thấy qua: router Tenda.
+Series tìm hiểu firmware security lần này chúng rẽ sang một dòng thiết bị mà chắc ai ở Việt Nam cũng từng thấy qua: router Tenda.
 
 Lý do chọn thì chẳng có gì cao siêu. Tenda phổ biến, nhà nào lắp gói mạng giá rẻ gần như cũng có một con. Lịch sử CVE của hãng thì khỏi bàn, search sơ sơ đã ra một danh sách khá dài.
 
@@ -50,8 +50,9 @@ Creating 8 MTD partitions on "spi2.0":
 0x000000080000-0x0000007d0000 : "firmware"    (kernel + rootfs squashfs)
 ```
 
-đây mình đi hướng gọn hơn: **tải thẳng firmware từ trang public rồi bung ra đọc.**
+Thôi đây mình đi hướng gọn hơn: **tải thẳng firmware từ trang public rồi bung ra đọc.**
 
 ## Lấy firmware từ nguồn public
 
 Không phải lúc nào cũng cần đục UART hay xì flash ra để có được rootfs — với mấy hãng consumer như Tenda thì firmware nằm sẵn trên trang download chính thức. Vào trang support của Tenda, tìm đúng model (AC10) rồi tải file firmware về : https://www.tendacn.com/material/show/104560
+
