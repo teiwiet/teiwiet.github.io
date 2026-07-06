@@ -171,7 +171,8 @@ function openMusicWindow() {
     musicWindow.style.display = "flex";
     musicWindow.style.top = "120px";
     musicWindow.style.left = "120px";
-
+    musicWindow.style.width = "1060px";    
+    musicWindow.style.height = "520px"; 
     currentIndex = 0;
     loadVideo(currentIndex);
 
