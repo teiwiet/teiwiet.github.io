@@ -194,4 +194,4 @@ requests.post(url, data={"lanIp": "192.168.0.1"}, cookies=cookies)
 | **Advisory** | [https://github.com/teiwiet/tenda-ac10-vulnerabilities/blob/main/advisory-fromAdvSetLanip.md] |
 | **Vendor** | Tenda |
 | **Firmware** | [US_AC10V4.0si_V16.03.10.09_multi_TDE01](https://www.tendacn.com/material/show/104560) |
-| **Tool dùng** | [firmlyzer](https://github.com/teiwiet/firmlyzer) · Ghidra · binwalk |
+| **Tool** | [firmlyzer](https://github.com/teiwiet/firmlyzer) · Ghidra · binwalk |
