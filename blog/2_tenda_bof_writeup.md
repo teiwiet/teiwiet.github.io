@@ -185,5 +185,13 @@ requests.post(url, data={"lanIp": "192.168.0.1"}, cookies=cookies)
  
 Điều kiện khai thác cần **session admin hợp lệ**, tức là post-auth — không phải zero-click. Tuy nhiên trên thiết bị consumer kiểu này mật khẩu admin mặc định thường yếu hoặc bị reuse, nên "post-auth" thực tế không phải rào cản lớn.
  
-Ở mức xác nhận hiện tại: **DoS chắc chắn** (httpd crash, router mất web UI cho đến khi watchdog khởi động lại tiến trình). Ghi đè saved return address về lý thuyết dẫn đến arbitrary code execution, nhưng cần bypass các mitigation trên MIPS (nếu có) — chưa đi tới đó.
+Ở mức xác nhận hiện tại: **DoS chắc chắn** (httpd crash, router mất web UI cho đến khi watchdog khởi động lại tiến trình). Ghi đè saved return address về lý thuyết dẫn đến arbitrary code execution, nhưng cần bypass các mitigation trên MIPS (nếu có) — chưa đi tới đó. Mình cũng thử xin CVE ở vuldb tính đến nay cũng là gần 2 tuần rồi mà vẫn ở trạng thái analysis, hóng quá :-)).
 
+## Advisory & References
+ 
+| | |
+|---|---|
+| **Advisory** | [https://github.com/teiwiet/tenda-ac10-vulnerabilities/blob/main/advisory-fromAdvSetLanip.md] |
+| **Vendor** | Tenda |
+| **Firmware** | [US_AC10V4.0si_V16.03.10.09_multi_TDE01](https://www.tendacn.com/material/show/104560) |
+| **Tool dùng** | [firmlyzer](https://github.com/teiwiet/firmlyzer) · Ghidra · binwalk |
