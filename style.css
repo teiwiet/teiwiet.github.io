@@ -262,6 +262,9 @@ body {
 .playlist-item.active .pl-artist {
     color: #c0c0c0;
 }
+.playlist, #nowPlayingText, .title-bar-text {
+    user-select: none;
+}
 /* 🦆 Con vịt chạy quanh màn hình (bấm vào được!) */
 .duck {
     position: absolute;
