@@ -55,4 +55,42 @@ Thôi đây mình đi hướng gọn hơn: **tải thẳng firmware từ trang p
 ## Lấy firmware từ nguồn public
 
 Không phải lúc nào cũng cần đục UART hay xì flash ra để có được rootfs — với mấy hãng consumer như Tenda thì firmware nằm sẵn trên trang download chính thức. Vào trang support của Tenda, tìm đúng model (AC10) rồi tải file firmware về : https://www.tendacn.com/material/show/104560
+Vậy là biết được con này chạy **SoC Siflower SF19A28** (MIPS, 4 nhân), **64MB RAM**, **8MB SPI NOR**, kernel **Linux 4.14.90** dựng trên nền OpenWrt/SDK Siflower. Bootlog còn khai luôn bảng phân vùng flash, tiện cho việc dump sau này:
 
+```
+Creating 8 MTD partitions on "spi2.0":
+0x000000000000-0x000000008000 : "spl-loader"
+0x000000008000-0x00000006f000 : "u-boot"
+0x00000006f000-0x000000070000 : "u-boot-env"
+0x000000070000-0x000000080000 : "factory"
+0x000000080000-0x0000007d0000 : "firmware"    (kernel + rootfs squashfs)
+```
+
+Thôi đây mình đi hướng gọn hơn: **tải thẳng firmware từ trang public rồi bung ra đọc.**
+
+## Lấy firmware từ nguồn public
+
+Không phải lúc nào cũng cần đục UART hay xì flash ra để có được rootfs — với mấy hãng consumer như Tenda thì firmware nằm sẵn trên trang download chính thức. Vào trang support của Tenda, tìm đúng model (AC10) rồi tải file firmware về: https://www.tendacn.com/material/show/104560
+
+## Soi firmware bằng tool tự viết
+
+Có file `.bin` rồi thì thay vì `binwalk` xong ngồi `grep` tay từng thứ, mình quăng thẳng vào cái firmware toolkit tự viết. Ý tưởng của nó gọn thôi, làm hai việc:
+
+1. **Extract + lùng file nhạy cảm** — bung rootfs ra rồi tự động rà mấy thứ hay chứa đồ ăn liền: private key, cert, file config có credential, `shadow`, script có mật khẩu hardcode...
+2. **Chấm điểm từng binary** — với mỗi ELF, nó parse symbol/import rồi cộng điểm theo những **hàm "nguy hiểm"** mà binary đó gọi. Càng nhiều hàm dễ dính lỗi (`system`, `popen`, `exec*`, `strcpy`, `sprintf`, `strcat`, `memcpy`, `gets`...) thì điểm càng cao — tức là ứng viên đáng soi trước.
+
+Ý tưởng đằng sau việc chấm điểm: thay vì mở lần lượt vài chục binary, cứ nhắm mấy thằng "bề mặt tấn công dày" nhất mà đục — thường là web server và đám xử lý input từ ngoài vào. Mọi người có thể clone về ở [đây](https://github.com/teiwiet/firmlyzer) sắp tới chắc là làm thêm fuzzer vào.
+
+
+Chạy nó lên thư mục firmware:
+
+```bash
+# cargo build trước nhé
+./firmlyzer analyze US_AC10V4.0_V16.03.10.09_multi_TDE01.bin
+```
+
+![image_sensitive_file](/pictures/WriteUp/Tenda/AC10/image_sensitive_file.png)
+
+![image_dangerous_file](/pictures/WriteUp/Tenda/AC10/image_dangerous_file.png)
+
+Như dự đoán, mặc dù hơi bị lặp vì binwalk ra 2 folder squashfs-root nhưng mà vẫn là mấy binary leo top bảng điểm toàn là đám ăn input từ ngoài — điển hình là web server và tiến trình xử lý cấu hình của Tenda. Đây chính là chỗ mình đào tiếp ở phần sau.
