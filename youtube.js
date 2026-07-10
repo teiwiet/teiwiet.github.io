@@ -1,12 +1,9 @@
 // youtube.js — thêm nhạc YouTube vào Media Player bằng cách hardcode link vào mảng.
-// KHÔNG sửa music.js. Nhạc .mp4 cũ giữ nguyên; các link dưới đây hiện thêm vào playlist.
 (function () {
 
   // ================== THÊM LINK Ở ĐÂY ==================
-  // Muốn thêm bài: dán thêm link vào mảng này là xong.
   //   - Đơn giản: chỉ cần URL, tên bài tự lấy từ YouTube.
   //   - Muốn tự đặt tên: dùng { url: "...", title: "...", artist: "..." }
-  // Nhận mọi kiểu link: watch?v= , youtu.be/ , /shorts/ , /embed/
   const YOUTUBE_TRACKS = [
     "https://www.youtube.com/watch?v=mhqovVvKwVE",
     "https://www.youtube.com/watch?v=58IkVCh3hWU",
@@ -19,7 +16,16 @@
     "https://www.youtube.com/watch?v=mBZdHuZCfic",
     "https://www.youtube.com/watch?v=NLukRvKWBeA",
     "https://www.youtube.com/watch?v=JDglMK9sgIQ",
-    "https://www.youtube.com/watch?v=mOFvJVroAJE"
+    "https://www.youtube.com/watch?v=mOFvJVroAJE",
+    "https://www.youtube.com/watch?v=oygNmMISdC0",
+    "https://www.youtube.com/watch?v=u3VTKvdAuIY",
+    "https://www.youtube.com/watch?v=181f8H8nUsw",
+    "https://www.youtube.com/watch?v=3YqPKLZF_WU",
+    "https://www.youtube.com/watch?v=WXmTEyq5nXc",
+    "https://www.youtube.com/watch?v=hpf4pDDTXbE",
+    "https://www.youtube.com/watch?v=z0a9k1gSMsw",
+    "https://www.youtube.com/watch?v=VPRjCeoBqrI",
+    "https://www.youtube.com/watch?v=lEi_XBg2Fpk",
   ];
   // ====================================================
 
