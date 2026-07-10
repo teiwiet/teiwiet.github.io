@@ -19,7 +19,7 @@ function makeResizable(windowEl, opts) {
 
   function startResize(e, dir) {
     e.preventDefault();
-    e.stopPropagation(); // không kích hoạt kéo di chuyển
+    e.stopPropagation();
 
     resizing = true;
     curDir = dir;
