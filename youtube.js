@@ -25,7 +25,9 @@
     "https://www.youtube.com/watch?v=z0a9k1gSMsw",
     "https://www.youtube.com/watch?v=VPRjCeoBqrI",
     "https://www.youtube.com/watch?v=lEi_XBg2Fpk",
-  ];
+    "https://www.youtube.com/watch?v=EdVREWxBt_g",
+    "https://www.youtube.com/watch?v=vXYVfk7agqU",
+ ];
   // ====================================================
 
   const videoPlayer = document.getElementById("videoPlayer");
