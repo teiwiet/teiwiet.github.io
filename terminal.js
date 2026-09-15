@@ -22,9 +22,10 @@
 .terminal-inputline { display:flex; align-items:center; gap:6px; }
 .terminal-prompt { color:#4caf50; white-space:nowrap; }
 #terminalInput {
-  flex:1; background:transparent; border:none; outline:none;
+  flex:1; background:transparent; border:none; outline:none; box-shadow:none;
   color:#e0e0e0; font-family:"Courier New", monospace; font-size:13px;
 }
+#terminalInput:focus { border:none; outline:none; box-shadow:none; }
 `;
     const style = document.createElement("style");
     style.id = "terminalStyles";
@@ -224,7 +225,22 @@
     }
   });
 
-  terminalScreen.addEventListener("mousedown", () => terminalInput.focus());
+  // bấm vào bất kỳ đâu trong cửa sổ (trừ nút min/close) đều focus vào dòng gõ lệnh.
+  // Dùng capture phase ở document để chắc chắn chạy trước, không bị handler nào khác
+  // (bringToFront, resize handle...) chen ngang.
+  document.addEventListener(
+    "mousedown",
+    (e) => {
+      if (!terminalWindow.contains(e.target)) return;
+      if (e.target.closest(".title-bar-controls")) return;
+      if (e.target === terminalInput) return; // click thẳng vào input thì để hành vi mặc định (đặt con trỏ đúng chỗ)
+      // không preventDefault thì trình duyệt sẽ tự trả focus về body ngay sau mousedown,
+      // ghi đè mất lệnh focus() bên dưới
+      e.preventDefault();
+      terminalInput.focus();
+    },
+    true
+  );
 
   /* ---------- OPEN / CLOSE ---------- */
   function openTerminalWindow() {

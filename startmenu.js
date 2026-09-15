@@ -91,8 +91,8 @@
     { label: "WriteUp", icon: "/pictures/help_book_computer-0.png", action: () => click("writeupIcon") },
     { label: "Terminal", icon: "terminal", action: () => click("terminalIcon") },
     { sep: true },
-    { label: "Restart", icon: null, action: restart },
-    { label: "Shut Down...", icon: null, action: shutDown },
+    { label: "Restart", icon: "/pictures/restart-icon.png", action: restart },
+    { label: "Shut Down...", icon: "/pictures/shutdown-icon.png", action: shutDown },
   ];
 
   function renderMenu() {
