@@ -15,9 +15,10 @@ const projects = [
       "Built working exploits for two known vulnerabilities: a command injection achieving arbitrary command execution (validated under GDB), and a stack buffer overflow in TP-Link WR740N httpd, assessed on a no-ASLR MIPS target."
     ],
     tech: ["MIPS", "Ghidra", "Binwalk", "QEMU", "GDB", "CH341A", "UART", "SPI flash"],
+    // netgear/tplink writeup chưa viết riêng -> trỏ vào mục WriteUp trong site
+    // thay vì link ngoài chết; thêm blog.id để trỏ thẳng bài cụ thể khi viết xong.
     links: [
-      { label: "Netgear writeup", url: "https://teiwiet.github.io/writeup/netgear.html" },
-      { label: "TP-Link writeup", url: "https://teiwiet.github.io/writeup/tplink.html" }
+      { label: "Read WriteUp", writeup: true }
     ]
   },
   {
@@ -213,7 +214,11 @@ function openProject(id) {
   if (p.links && p.links.length) {
     html += '<fieldset><legend>Links</legend><div class="project-links">';
     p.links.forEach(l => {
-      html += '<a class="link-btn" href="' + l.url + '" target="_blank" rel="noopener">' + l.label + '</a>';
+      if (l.writeup) {
+        html += '<a class="link-btn" href="#" data-open-writeup="' + (l.blogId || "") + '">' + l.label + '</a>';
+      } else {
+        html += '<a class="link-btn" href="' + l.url + '" target="_blank" rel="noopener">' + l.label + '</a>';
+      }
     });
     html += '</div></fieldset>';
   }
@@ -247,6 +252,26 @@ minDocs.onclick = () => { docsWindow.style.display = "none"; };
 
 closeProject.onclick = () => { projectWindow.style.display = "none"; removeTaskbarBtn(projectWindow); };
 minProject.onclick = () => { projectWindow.style.display = "none"; };
+
+// ===== LINK "Đọc WriteUp" TRONG PROJECT -> MỞ CỬA SỔ WRITEUP =====
+projectContent.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-open-writeup]");
+  if (!a) return;
+  e.preventDefault();
+
+  projectWindow.style.display = "none"; // nhường chỗ cho cửa sổ WriteUp
+  openBlogWindow(); // định nghĩa trong blog.js
+
+  const blogId = a.dataset.openWriteup;
+  if (blogId) {
+    // đợi index bài viết nạp xong (loadBlogIndex chạy async trong openBlogWindow) rồi mở đúng bài
+    const tryOpen = () => {
+      if (!blogIndexLoaded) { setTimeout(tryOpen, 150); return; }
+      if (blogs.some(b => b.id === blogId)) openBlog(blogId);
+    };
+    tryOpen();
+  }
+});
 
 // ===== KÉO DI CHUYỂN (dùng makeDraggable từ drag.js) =====
 makeDraggable(docsWindow, document.getElementById("docsWindowHeader"));

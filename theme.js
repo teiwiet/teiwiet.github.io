@@ -60,6 +60,10 @@ body.dark .markdown-body blockquote { background: #242424; border-left-color: #3
 body.dark .markdown-body th,
 body.dark .markdown-body td { border-color: #555; }
 body.dark .markdown-body hr { border-top-color: #444; }
+body.dark .blog-nav { border-top-color: #3a3a3a; }
+body.dark .blog-nav-link { color: #dcdcdc; border-color: #3a3a3a; }
+body.dark .blog-nav-link:hover { background: #22314f; border-color: #3b6ea5; }
+body.dark .blog-nav-label { color: #9a9a9a; }
 /* <pre> vốn đã tối nên giữ nguyên */
 
 /* ====== MEDIA PLAYER ====== */
@@ -129,7 +133,7 @@ body.dark .theme-tray {
   function apply(m) {
     document.body.classList.toggle("dark", m === "dark");
     btn.textContent = m === "dark" ? "☀️" : "🌙";
-    btn.title = m === "dark" ? "Chuyển sang Light mode" : "Chuyển sang Dark mode";
+    btn.title = m === "dark" ? "Switch to Light mode" : "Switch to Dark mode";
   }
 
   apply(mode);

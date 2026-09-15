@@ -50,6 +50,23 @@
 .markdown-body table { border-collapse:collapse; margin:0.7em 0; }
 .markdown-body th, .markdown-body td { border:1px solid #999; padding:5px 9px; }
 .markdown-body hr { border:none; border-top:1px solid #ccc; margin:1.2em 0; }
+
+.blog-nav {
+  display:flex; justify-content:space-between; gap:12px;
+  margin-top:2em; padding-top:14px; border-top:1px solid #d0d0d0;
+}
+.blog-nav-link {
+  flex:1; display:flex; flex-direction:column; gap:2px;
+  text-decoration:none; color:#1a1a1a;
+  padding:8px 12px; border:1px solid #d0d0d0; border-radius:4px;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+  max-width:48%;
+}
+.blog-nav-link:hover { background:#eef3fc; border-color:#a9c3ea; }
+.blog-nav-link.next { text-align:right; margin-left:auto; }
+.blog-nav-label { font-size:11px; color:gray; }
+.blog-nav-title { font-size:13px; font-weight:bold; }
+.blog-nav-spacer { flex:1; }
 `;
   const style = document.createElement("style");
   style.id = "blogStyles";
@@ -245,9 +262,41 @@ async function openBlog(id) {
     }
   }
 
-  blogContent.innerHTML = mdToHtml(md);
+  blogContent.innerHTML = mdToHtml(md) + renderBlogNav(id);
   blogContent.scrollTop = 0;
 }
+
+// ===== NAV "BÀI TRƯỚC / BÀI TIẾP" Ở CUỐI BÀI =====
+function renderBlogNav(id) {
+  const idx = blogs.findIndex(b => b.id === id);
+  const prev = idx > 0 ? blogs[idx - 1] : null;
+  const next = idx >= 0 && idx < blogs.length - 1 ? blogs[idx + 1] : null;
+  if (!prev && !next) return "";
+
+  let html = '<div class="blog-nav">';
+  if (prev) {
+    html += '<a class="blog-nav-link prev" href="#" data-nav="' + prev.id + '">' +
+      '<span class="blog-nav-label">← Bài trước</span>' +
+      '<span class="blog-nav-title">' + prev.title + '</span></a>';
+  } else {
+    html += '<div class="blog-nav-spacer"></div>';
+  }
+  if (next) {
+    html += '<a class="blog-nav-link next" href="#" data-nav="' + next.id + '">' +
+      '<span class="blog-nav-label">Bài tiếp →</span>' +
+      '<span class="blog-nav-title">' + next.title + '</span></a>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// bấm vào link nav -> mở bài tương ứng (event delegation, khỏi lo re-render mất listener)
+blogContent.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-nav]");
+  if (!a) return;
+  e.preventDefault();
+  openBlog(a.dataset.nav);
+});
 
 // ===== MỞ / ĐÓNG CỬA SỔ =====
 function openBlogWindow() {

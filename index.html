@@ -45,6 +45,10 @@
       <img src="/pictures/help_book_computer-0.png" alt="WriteUp">
       <span><a href="#" onclick="return false;">WriteUp</a></span>
     </div>
+    <div class="icon" id="terminalIcon">
+      <div class="terminal-icon-img">&gt;_</div>
+      <span><a href="#" onclick="return false;">Terminal</a></span>
+    </div>
   </div>
 
   <!-- Media Player -->
@@ -177,11 +181,32 @@
     </div>
   </div>
 
+  <!-- Terminal -->
+  <div class="window" id="terminalWindow" style="display:none; width:640px; height:420px;">
+    <div class="title-bar" id="terminalWindowHeader">
+      <div class="title-bar-text">MS-DOS Prompt</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" id="minTerminal"></button>
+        <button aria-label="Close" id="closeTerminal"></button>
+      </div>
+    </div>
+    <div class="window-body" style="padding:0; margin:0;">
+      <div class="terminal-screen" id="terminalScreen">
+        <div class="terminal-output" id="terminalOutput"></div>
+        <div class="terminal-inputline">
+          <span class="terminal-prompt">guest@teiwiet:~$</span>
+          <input type="text" id="terminalInput" autocomplete="off" spellcheck="false" autocapitalize="off" />
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Duck -->
   <div id="duck"></div>
   <!-- Taskbar -->
+  <div id="startMenu" class="start-menu" style="display:none;"></div>
   <div id="taskbar">
-    <button class="start-button">Start</button>
+    <button class="start-button" id="startButton">Start</button>
     <div class="taskbar-items" id="taskbarItems">
     </div>
     <div class="taskbar-clock" id="clock"></div>
@@ -194,6 +219,8 @@
   <script src="/about.js"></script>
   <script src="/docs.js"></script>
   <script src="/blog.js"></script>
+  <script src="/terminal.js"></script>
+  <script src="/startmenu.js"></script>
   <script src="/clock.js"></script>
   <script src="/boot.js"></script>
   <script src="/theme.js"></script>

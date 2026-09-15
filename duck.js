@@ -7,23 +7,23 @@
   const messages = [
     "Quack!",
     "I'm single",
-    "Click me again 👀",
+    "Click me again",
     "Quack quack quack",
-    "Looking for a crush 🥺",
-    "Don't rm -rf me 😨",
+    "Looking for a crush",
+    "Don't rm -rf me",
     "Ducks can reverse engineer too",
     "sudo quack",
-    "Segfault? Skill issue 💀",
-    "I overflow your stack 🦆",
+    "Segfault? Skill issue",
+    "I overflow your stack",
     "0xDEADBEEF",
     "Just one more exploit...",
-    "It compiles, ship it 🚀",
+    "It compiles, ship it",
     "Have you tried turning it off and on?",
     "I run Linux btw",
     "git push --force",
     "There's no place like 127.0.0.1",
-    "Quacker than your firewall 🔥",
-    "Hire me pls 💼",
+    "Quacker than your firewall",
+    "Hire me pls",
     "I speak fluent MIPS",
     "Buffer? I barely know her",
     "Press F to pay respects",
@@ -32,12 +32,12 @@
     "Catch me in the QEMU",
     "I'm not a bug, I'm a feature",
     "Powered by C and chaos",
-    "Blue screen incoming 💙",
-    "I dumped your firmware 🔧",
+    "Blue screen incoming",
+    "I dumped your firmware",
     "Quack overflow",
     "Pet me, I'm friend-shaped",
     "Warning: ducks may multiply",
-    "I touched the SPI flash 🔌",
+    "I touched the SPI flash",
     "rm -rf feelings/"
   ];
 
@@ -122,7 +122,7 @@
         spawnDuck(bx, by);
       }
     } else {
-      showBubble(duck, "🦆 DUCK INVASION 🦆");
+      showBubble(duck, "DUCK INVASION");
     }
   }
 
@@ -158,7 +158,7 @@
     if (mainDuck) {
       bounce(mainDuck);
       quack(1);
-      showBubble(mainDuck, "Quack~ just me now 🦆");
+      showBubble(mainDuck, "Quack~ just me now");
     }
   }
 
