@@ -87,8 +87,13 @@ function generateThumbnail(rawSrc, imgEl) {
 }
 
 // ===== RENDER PLAYLIST =====
+// Chỉ xoá/vẽ lại các mục mp4 (KHÔNG đụng vào .yt-item) — playlist giờ tải bất đồng bộ
+// (chờ GitHub API) nên có thể chạy sau khi youtube.js đã chèn sẵn các bài YouTube vào
+// cùng <ul>; xoá hết innerHTML sẽ mất luôn mấy bài đó.
 function renderPlaylist() {
-    playlistEl.innerHTML = "";
+    playlistEl.querySelectorAll(".playlist-item:not(.yt-item)").forEach(el => el.remove());
+    const firstYt = playlistEl.querySelector(".yt-item"); // mốc để chèn mp4 lên trước, giữ đúng thứ tự cũ
+
     playlist.forEach((src, i) => {
         const { artist, title } = parseTrack(src);
 
@@ -111,7 +116,7 @@ function renderPlaylist() {
 
         // 1 click chọn + phát luôn cho đỡ phải double click
         li.onclick = () => playTrack(i);
-        playlistEl.appendChild(li);
+        playlistEl.insertBefore(li, firstYt); // firstYt = null -> insertBefore hoạt động như appendChild
 
         // lưu lại để bắt thumbnail sau (khi mở cửa sổ lần đầu)
         thumbTargets.push({ src: src, el: thumb });
