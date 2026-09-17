@@ -18,14 +18,14 @@ const playlistEl = document.getElementById("playlist");
 console.log("MUSIC.JS VERSION = FULL REWRITE 2026");
 
 // ===== PLAYLIST =====
-const playlist = [
-    "music/Avicii-Without You.mp4",
-    "music/Coldplay-Yellow.mp4",
-    "music/Avicii-Wake Me Up.mp4",
-    "music/Coldplay-Everglow.mp4",
-    "music/Avicii-Dear Boy.mp4",
-    "music/Coldplay-Every Teardrop Is a Waterfall.mp4",
-];
+// Tự liệt kê mọi file nhạc trong thư mục music/ trên GitHub, giống cơ chế WriteUp
+// (blog.js) => chỉ cần thả file .mp4/.mp3/... vào music/, push lên là nó tự hiện.
+const MUSIC_REPO = "teiwiet/teiwiet.github.io";
+const MUSIC_DIR = "music";
+const MUSIC_EXT_RE = /\.(mp4|webm|m4a|mp3|ogg)$/i;
+
+let playlist = [];
+let musicIndexLoaded = false;
 
 let currentIndex = 0;
 let loadedIndex = -1; // bài đang nằm trong video (để khỏi nạp lại, giữ buffer)
@@ -142,8 +142,42 @@ function playTrack(index) {
     videoPlayer.play().catch(err => console.log("Play blocked:", err));
 }
 
+// ===== TỰ NẠP DANH SÁCH NHẠC TỪ GITHUB =====
+async function loadMusicIndex() {
+    if (musicIndexLoaded) return;
+
+    nowPlayingText.textContent = "Đang tải danh sách nhạc…";
+
+    const api = "https://api.github.com/repos/" + MUSIC_REPO + "/contents/" + MUSIC_DIR;
+    let files;
+    try {
+        const res = await fetch(api, { headers: { Accept: "application/vnd.github+json" } });
+        if (!res.ok) throw new Error("GitHub API " + res.status);
+        const data = await res.json();
+        files = data.filter(f => f.type === "file" && MUSIC_EXT_RE.test(f.name));
+    } catch (e) {
+        nowPlayingText.textContent = "Không tải được danh sách nhạc";
+        console.error("Music index fetch failed:", e);
+        return;
+    }
+
+    files.sort((a, b) => a.name.localeCompare(b.name));
+    playlist = files.map(f => MUSIC_DIR + "/" + f.name);
+    musicIndexLoaded = true;
+
+    renderPlaylist();
+    if (playlist.length) {
+        loadVideo(0);
+        currentIndex = 0;
+    } else {
+        nowPlayingText.textContent = "Chưa có file nhạc nào trong /" + MUSIC_DIR;
+    }
+}
+
 // ===== LOAD VIDEO =====
 function loadVideo(index) {
+    if (!playlist.length) return;
+
     // đã nạp đúng bài này rồi -> giữ nguyên buffer, không tải lại
     if (index === loadedIndex) {
         setActiveTrack(index);
@@ -174,7 +208,7 @@ function openMusicWindow() {
     musicWindow.style.width = "1060px";    
     musicWindow.style.height = "520px"; 
     currentIndex = 0;
-    loadVideo(currentIndex);
+    if (playlist.length) loadVideo(currentIndex);
 
     // bắt thumbnail lần đầu mở cửa sổ
     ensureThumbnails();
@@ -236,6 +270,7 @@ volumeSlider.oninput = (e) => {
 
 // ===== NEXT / PREV =====
 nextBtn.onclick = () => {
+    if (!playlist.length) return;
     currentIndex++;
     if (currentIndex >= playlist.length) currentIndex = 0;
     loadVideo(currentIndex);
@@ -243,6 +278,7 @@ nextBtn.onclick = () => {
 };
 
 prevBtn.onclick = () => {
+    if (!playlist.length) return;
     currentIndex--;
     if (currentIndex < 0) currentIndex = playlist.length - 1;
     loadVideo(currentIndex);
@@ -306,7 +342,4 @@ minMusic.onclick = () => {
 };
 
 // ===== KHỞI TẠO PLAYLIST KHI LOAD TRANG =====
-renderPlaylist();
-
-loadVideo(0);
-currentIndex = 0;
+loadMusicIndex();
