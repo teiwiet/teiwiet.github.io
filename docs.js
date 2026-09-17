@@ -80,12 +80,14 @@ const docsGrid = document.getElementById("docsGrid");
 const docsStatus = document.getElementById("docsStatus");
 const closeDocs = document.getElementById("closeDocs");
 const minDocs = document.getElementById("minDocs");
+const maxDocs = document.getElementById("maxDocs");
 
 const projectWindow = document.getElementById("projectWindow");
 const projectTitle = document.getElementById("projectTitle");
 const projectContent = document.getElementById("projectContent");
 const closeProject = document.getElementById("closeProject");
 const minProject = document.getElementById("minProject");
+const maxProject = document.getElementById("maxProject");
 
 // ===== BRING TO FRONT (cho nhiều cửa sổ) =====
 let zCounter = 100;
@@ -276,6 +278,10 @@ projectContent.addEventListener("click", (e) => {
 // ===== KÉO DI CHUYỂN (dùng makeDraggable từ drag.js) =====
 makeDraggable(docsWindow, document.getElementById("docsWindowHeader"));
 makeDraggable(projectWindow, document.getElementById("projectWindowHeader"));
+
+// ===== PHÓNG TO / THU VỀ (dùng makeMaximizable từ resize.js) =====
+makeMaximizable(docsWindow, maxDocs);
+makeMaximizable(projectWindow, maxProject);
 
 // ===== KHỞI TẠO =====
 renderDocsGrid();

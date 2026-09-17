@@ -76,3 +76,31 @@ makeResizable(
   document.getElementById("musicWindow"),
   { minW: 520, minH: 360 }
 );
+
+// makeMaximizable — nút phóng to/thu về, dùng chung cho mọi cửa sổ
+function makeMaximizable(win, btn) {
+  let isMax = false;
+  let prev = { width: "", height: "", top: "", left: "" };
+
+  btn.onclick = () => {
+    if (!isMax) {
+      prev = {
+        width: win.style.width,
+        height: win.style.height,
+        top: win.style.top,
+        left: win.style.left,
+      };
+      win.style.top = "0px";
+      win.style.left = "0px";
+      win.style.width = "100vw";
+      win.style.height = "calc(100vh - 40px)"; // trừ taskbar
+      isMax = true;
+    } else {
+      win.style.width = prev.width;
+      win.style.height = prev.height;
+      win.style.top = prev.top;
+      win.style.left = prev.left;
+      isMax = false;
+    }
+  };
+}

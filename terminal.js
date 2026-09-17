@@ -41,6 +41,7 @@
   const terminalInput = document.getElementById("terminalInput");
   const closeTerminal = document.getElementById("closeTerminal");
   const minTerminal = document.getElementById("minTerminal");
+  const maxTerminal = document.getElementById("maxTerminal");
   if (!terminalIcon || !terminalWindow) return;
 
   const PROMPT = "guest@teiwiet:~$";
@@ -269,4 +270,5 @@
 
   makeDraggable(terminalWindow, document.getElementById("terminalWindowHeader")); // drag.js
   makeResizable(terminalWindow, { minW: 420, minH: 260 }); // resize.js
+  makeMaximizable(terminalWindow, maxTerminal); // resize.js
 })();
