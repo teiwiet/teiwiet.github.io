@@ -54,3 +54,10 @@ makeDraggable(
     document.getElementById("cvWindow"),
     document.getElementById("cvWindowHeader")
 );
+
+// Thanh "Now Playing" trong Media Player trông giống title-bar nhưng trước đây
+// không kéo được -> gắn thêm để kéo cửa sổ từ đây cũng được.
+makeDraggable(
+    document.getElementById("musicWindow"),
+    document.getElementById("musicNowPlayingBar")
+);
