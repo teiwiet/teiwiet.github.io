@@ -24,6 +24,14 @@ const MUSIC_REPO = "teiwiet/teiwiet.github.io";
 const MUSIC_DIR = "music";
 const MUSIC_EXT_RE = /\.(mp4|webm|m4a|mp3|ogg)$/i;
 
+// Ghim vài bài lên đầu playlist (đúng thứ tự liệt kê ở đây); bài không có trong list này
+// thì xếp sau, theo alphabet như cũ. Thêm/bớt tên file ở đây để đổi thứ tự.
+const PRIORITY_ORDER = [
+    "Avicii-Without You.mp4",
+    "Coldplay-Yellow.mp4",
+    "Coldplay-Everglow.mp4",
+];
+
 let playlist = [];
 let musicIndexLoaded = false;
 
@@ -166,7 +174,14 @@ async function loadMusicIndex() {
         return;
     }
 
-    files.sort((a, b) => a.name.localeCompare(b.name));
+    files.sort((a, b) => {
+        const pa = PRIORITY_ORDER.indexOf(a.name);
+        const pb = PRIORITY_ORDER.indexOf(b.name);
+        if (pa !== -1 && pb !== -1) return pa - pb; // cả 2 đều ghim -> theo đúng thứ tự ghim
+        if (pa !== -1) return -1;                   // chỉ a ghim -> a lên trước
+        if (pb !== -1) return 1;                     // chỉ b ghim -> b lên trước
+        return a.name.localeCompare(b.name);          // còn lại theo alphabet
+    });
     playlist = files.map(f => MUSIC_DIR + "/" + f.name);
     musicIndexLoaded = true;
 
