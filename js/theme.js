@@ -26,6 +26,21 @@ body.dark {
 }
 body.dark .window,
 body.dark .window-body { color: var(--text-color); }
+/* nền chung cho MỌI cửa sổ — trước đây chỉ đổi màu chữ nên cửa sổ nào không có
+   panel nội dung riêng che kín (CV, Project viewer) thì bị trắng/xám khó đọc */
+body.dark .window { background: var(--surface); }
+body.dark .project-content fieldset { border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow); }
+body.dark .project-tags .tag {
+  background: var(--button-face);
+  border-color: var(--button-highlight) var(--button-shadow) var(--button-shadow) var(--button-highlight);
+  color: var(--text-color);
+}
+body.dark .link-btn {
+  background: var(--button-face);
+  border-color: var(--button-highlight) var(--button-shadow) var(--button-shadow) var(--button-highlight);
+  color: var(--text-color);
+}
+body.dark .project-status { background: #1a3d7a; }
 
 /* taskbar */
 body.dark #taskbar {
@@ -87,6 +102,12 @@ body.dark .docs-item:hover { border-color: #666; }
 /* ====== NOTEPAD ====== */
 body.dark .txt-file { background: #1d1d1d; color: #e4e4e4; }
 
+/* ====== START MENU ====== */
+body.dark .start-menu { background: var(--surface); }
+body.dark .start-menu-item { color: var(--text-color); }
+body.dark .start-menu-item:hover { background: #102a66; color: #fff; }
+body.dark .start-menu-sep { border-top-color: var(--button-shadow); border-bottom-color: var(--button-highlight); }
+
 /* ====== KHAY TOGGLE ====== */
 .theme-tray {
   display: flex; align-items: center;
@@ -132,7 +153,9 @@ body.dark .theme-tray {
   /* ---------- 4. ÁP DỤNG ---------- */
   function apply(m) {
     document.body.classList.toggle("dark", m === "dark");
-    btn.textContent = m === "dark" ? "☀️" : "🌙";
+    // dùng ký hiệu Unicode cũ (block Miscellaneous Symbols) thay vì emoji mặt trăng
+    // đời mới (🌙) vì máy thiếu font emoji màu sẽ hiện ô vuông trống.
+    btn.textContent = m === "dark" ? "☀️" : "☾";
     btn.title = m === "dark" ? "Switch to Light mode" : "Switch to Dark mode";
   }
 
