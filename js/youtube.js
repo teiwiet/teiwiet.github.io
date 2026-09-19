@@ -27,7 +27,6 @@
     "https://www.youtube.com/watch?v=lEi_XBg2Fpk",
     "https://www.youtube.com/watch?v=EdVREWxBt_g",
     "https://www.youtube.com/watch?v=vXYVfk7agqU",
-    "https://www.youtube.com/watch?v=dd7nhkYdXHI"
  ];
   // ====================================================
 
