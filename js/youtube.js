@@ -249,6 +249,33 @@
   }
 
   function combinedNext() {
+    // loop: phát lại đúng bài đang mở (mp4 hoặc YouTube), không nhảy bài
+    if (window.loopMode) {
+      if (ytMode) {
+        if (ytPlayer && ytPlayer.seekTo) {
+          ytPlayer.seekTo(0);
+          ytPlayer.playVideo();
+        }
+      } else {
+        videoPlayer.currentTime = 0;
+        videoPlayer.play().catch(() => {});
+      }
+      return;
+    }
+
+    // shuffle: nhảy tới 1 vị trí ngẫu nhiên khác trong toàn bộ danh sách gộp
+    if (window.shuffleMode) {
+      const T = mp4Count() + ytTracks.length;
+      if (T > 1) {
+        let r;
+        do {
+          r = Math.floor(Math.random() * T);
+        } while (r === globalPos());
+        playCombined(r);
+        return;
+      }
+    }
+
     playCombined(globalPos() + 1);
   }
   function combinedPrev() {

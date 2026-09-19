@@ -12,7 +12,13 @@ const playBtn = document.getElementById("playBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
+const shuffleBtn = document.getElementById("shuffleBtn");
+const loopBtn = document.getElementById("loopBtn");
 const volumeSlider = document.getElementById("volumeSlider");
+
+// gắn vào window để youtube.js (file khác) đọc/ghi chung được trạng thái này
+window.loopMode = false;
+window.shuffleMode = false;
 const playlistEl = document.getElementById("playlist");
 
 console.log("MUSIC.JS VERSION = FULL REWRITE 2026");
@@ -289,10 +295,23 @@ volumeSlider.oninput = (e) => {
 };
 
 // ===== NEXT / PREV =====
+// (nếu youtube.js load được thì nó sẽ đè nextBtn.onclick bằng bản gộp cả YouTube,
+// bản này chỉ chạy khi không có youtube.js hoặc playlist chỉ toàn mp4)
 nextBtn.onclick = () => {
     if (!playlist.length) return;
-    currentIndex++;
-    if (currentIndex >= playlist.length) currentIndex = 0;
+    if (window.loopMode) {
+        videoPlayer.currentTime = 0;
+        videoPlayer.play().catch(() => {});
+        return;
+    }
+    if (window.shuffleMode && playlist.length > 1) {
+        let r;
+        do { r = Math.floor(Math.random() * playlist.length); } while (r === currentIndex);
+        currentIndex = r;
+    } else {
+        currentIndex++;
+        if (currentIndex >= playlist.length) currentIndex = 0;
+    }
     loadVideo(currentIndex);
     videoPlayer.play();
 };
@@ -303,6 +322,17 @@ prevBtn.onclick = () => {
     if (currentIndex < 0) currentIndex = playlist.length - 1;
     loadVideo(currentIndex);
     videoPlayer.play();
+};
+
+// ===== SHUFFLE / LOOP TOGGLE =====
+loopBtn.onclick = () => {
+    window.loopMode = !window.loopMode;
+    loopBtn.classList.toggle("active", window.loopMode);
+};
+
+shuffleBtn.onclick = () => {
+    window.shuffleMode = !window.shuffleMode;
+    shuffleBtn.classList.toggle("active", window.shuffleMode);
 };
 
 // ===== AUTO NEXT =====

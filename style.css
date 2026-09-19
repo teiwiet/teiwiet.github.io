@@ -159,6 +159,13 @@ body {
     justify-content: center;
 }
 
+/* Nút Shuffle/Loop khi đang bật -> lõm xuống + nền xanh cho rõ đang active */
+.video-controls button.active {
+    border: 2px inset #fff;
+    background: #000080;
+    filter: brightness(1.6);
+}
+
 /* 🎵 Media Player có thể resize: xếp dọc, nội dung lấp đầy */
 #musicWindow {
     display: flex;
