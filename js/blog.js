@@ -67,6 +67,12 @@
 .blog-nav-label { font-size:11px; color:gray; }
 .blog-nav-title { font-size:13px; font-weight:bold; }
 .blog-nav-spacer { flex:1; }
+
+.blog-comments {
+  margin-top: 2em;
+  padding-top: 14px;
+  border-top: 1px solid #d0d0d0;
+}
 `;
   const style = document.createElement("style");
   style.id = "blogStyles";
@@ -80,6 +86,17 @@
 // Sửa lại 2 dòng này nếu repo / thư mục của bạn khác:
 const BLOG_REPO = "teiwiet/teiwiet.github.io"; // "user/repo"
 const BLOG_DIR  = "blog";                      // thư mục chứa file .md
+
+// ===== CONFIG: COMMENT (giscus — chạy nhờ GitHub Discussions, không cần backend) =====
+// repoId lấy thẳng qua GitHub REST API (public, không đổi dù Discussions tắt/bật).
+// categoryId thì PHẢI lấy từ giscus.app sau khi bật Discussions cho repo (3 bước
+// setup 1 lần, làm thủ công trên GitHub — Claude không có quyền làm thay).
+const GISCUS_CONFIG = {
+  repo: "teiwiet/teiwiet.github.io",
+  repoId: "R_kgDORgekmg",
+  category: "General",              // tên category Discussions sẽ dùng để chứa comment
+  categoryId: "DIC_kwDORgekms4DH_W9",
+};
 
 let blogs = [];              // sẽ được nạp tự động từ GitHub
 let blogIndexLoaded = false; // chỉ nạp 1 lần
@@ -262,9 +279,57 @@ async function openBlog(id) {
     }
   }
 
-  blogContent.innerHTML = mdToHtml(md) + renderBlogNav(id);
+  blogContent.innerHTML = mdToHtml(md) + renderBlogNav(id) + '<div class="blog-comments" id="blogComments"></div>';
   blogContent.scrollTop = 0;
+
+  renderGiscus(id);
 }
+
+// ===== COMMENT Ở CUỐI BÀI (giscus) =====
+// Mỗi bài 1 thread riêng (mapping "specific" + term = id bài), vì cả site chỉ có
+// 1 URL duy nhất (SPA), không dùng mapping theo pathname/url được như blog thường.
+function renderGiscus(id) {
+  const box = document.getElementById("blogComments");
+  if (!box) return;
+
+  if (GISCUS_CONFIG.categoryId === "REPLACE_ME") {
+    box.innerHTML =
+      '<p style="color:gray;font-size:12px">Comment chưa bật — thiếu categoryId trong GISCUS_CONFIG ở đầu blog.js.</p>';
+    return;
+  }
+
+  box.innerHTML = ""; // xoá widget của bài trước, tạo mới cho đúng bài hiện tại
+  const script = document.createElement("script");
+  script.src = "https://giscus.app/client.js";
+  script.async = true;
+  script.crossOrigin = "anonymous";
+  script.setAttribute("data-repo", GISCUS_CONFIG.repo);
+  script.setAttribute("data-repo-id", GISCUS_CONFIG.repoId);
+  script.setAttribute("data-category", GISCUS_CONFIG.category);
+  script.setAttribute("data-category-id", GISCUS_CONFIG.categoryId);
+  script.setAttribute("data-mapping", "specific");
+  script.setAttribute("data-term", id);
+  script.setAttribute("data-strict", "1");
+  script.setAttribute("data-reactions-enabled", "1");
+  script.setAttribute("data-input-position", "top");
+  script.setAttribute("data-lang", "vi");
+  script.setAttribute(
+    "data-theme",
+    document.body.classList.contains("dark") ? "dark" : "light"
+  );
+  box.appendChild(script);
+}
+
+// đồng bộ theme sáng/tối của khung comment khi bấm nút toggle trong theme.js
+function updateGiscusTheme(isDark) {
+  const iframe = document.querySelector("iframe.giscus-frame");
+  if (!iframe) return;
+  iframe.contentWindow.postMessage(
+    { giscus: { setConfig: { theme: isDark ? "dark" : "light" } } },
+    "https://giscus.app"
+  );
+}
+window.updateGiscusTheme = updateGiscusTheme;
 
 // ===== NAV "BÀI TRƯỚC / BÀI TIẾP" Ở CUỐI BÀI =====
 function renderBlogNav(id) {

@@ -157,6 +157,8 @@ body.dark .theme-tray {
     // đời mới (🌙) vì máy thiếu font emoji màu sẽ hiện ô vuông trống.
     btn.textContent = m === "dark" ? "☀️" : "☾";
     btn.title = m === "dark" ? "Switch to Light mode" : "Switch to Dark mode";
+    // đồng bộ theme cho khung comment WriteUp (blog.js) nếu đang mở sẵn
+    if (typeof window.updateGiscusTheme === "function") window.updateGiscusTheme(m === "dark");
   }
 
   apply(mode);

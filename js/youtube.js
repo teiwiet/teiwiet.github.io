@@ -185,9 +185,19 @@
     s.src = "https://www.youtube.com/iframe_api";
     document.head.appendChild(s);
   }
+  // YouTube nhớ trạng thái "đã bật caption" ở lần xem trước và tự bật lại cho mọi video sau.
+  // Mỗi video mới tắt caption đúng 1 lần (nút CC vẫn còn nên người xem tự bật được;
+  // không dùng unloadModule("captions") vì nó gỡ luôn nút CC).
+  let ytCaptionsOffFor = null;
+  function hideYtCaptions() {
+    try {
+      ytPlayer.setOption("captions", "track", {});
+    } catch (e) {}
+  }
+
   window.onYouTubeIframeAPIReady = function () {
     ytPlayer = new YT.Player("ytTarget", {
-      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+      playerVars: { rel: 0, modestbranding: 1, playsinline: 1, cc_load_policy: 0 },
       events: {
         onReady: function () {
           ytReady = true;
@@ -207,6 +217,11 @@
             const t = ytTracks[curYt];
             if (d && d.title && t && t.title !== d.title)
               setTitle(t, d.title, t.artist);
+            if (d && d.video_id && d.video_id !== ytCaptionsOffFor) {
+              ytCaptionsOffFor = d.video_id;
+              hideYtCaptions();
+              setTimeout(hideYtCaptions, 800); // module caption đôi khi nạp trễ hơn sự kiện PLAYING
+            }
           }
         },
       },
